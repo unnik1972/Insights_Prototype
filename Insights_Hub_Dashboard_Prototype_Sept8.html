@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insights Hub — dashboard and report designs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1B1B1F; --paper:#FAFAF9; --surface:#FFFFFF; --rule:#E7E6EB;
+  --cyan:#6D3FD5; --muted:#6E6D77; --faint:#9A99A4;
+  --behind:#D45D79; --ahead:#D39A35; --onplan:#38AD9D; --blocked:#7853D6;
+  --lavender:#E9E5FF; --lavender-deep:#4D28B8; --mint:#DDF7F2;
+  --butter:#FFF7D6; --bluewash:#E7F1FF;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(760px 360px at 46% 0%, rgba(231,225,255,.68), transparent 72%),
+    radial-gradient(560px 300px at 70% 16%, rgba(221,247,242,.48), transparent 72%),
+    radial-gradient(460px 280px at 100% 8%, rgba(255,247,214,.48), transparent 74%),
+    var(--paper); color:var(--ink);
+  font-family:"Outfit",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-weight:400; font-size:15px; line-height:1.5;
+  font-variant-numeric:tabular-nums; -webkit-font-smoothing:antialiased;
+}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--cyan)}
+
+/* ---------- shell ---------- */
+.shell{display:flex; min-height:100vh; align-items:stretch}
+.rail{
+  width:216px; flex:0 0 216px; background:rgba(255,255,255,.96); color:var(--ink);
+  border-right:1px solid #EFEEF2;
+  padding:26px 0 20px; position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.brand{padding:0 22px 24px; border-bottom:1px solid #EFEEF2}
+.brand .mark{font-size:19px; font-weight:600; letter-spacing:-.01em; line-height:1.2}
+.brand .mark{color:var(--cyan)}
+.brand .sub{font-size:12.5px; color:#A09FA9; margin-top:4px}
+.nav{padding:14px 10px 0}
+.nav button{
+  display:block; width:100%; text-align:left; background:none; border:0; color:#4E4D56;
+  font:inherit; font-size:14.5px; padding:9px 12px; border-radius:6px; cursor:pointer;
+}
+.nav button:hover{background:#F7F5FF; color:var(--ink)}
+.nav button[aria-current="true"]{background:var(--lavender); color:var(--lavender-deep); font-weight:500}
+.nav button:focus-visible{outline:2px solid var(--cyan); outline-offset:1px}
+.nav .navnote{font-size:11.5px; color:#A09FA9; padding:4px 12px 12px; line-height:1.35}
+.railfoot{padding:18px 22px 0; margin-top:18px; border-top:1px solid #EFEEF2;
+  font-size:11.5px; color:#A09FA9; line-height:1.5}
+
+.main{flex:1 1 auto; min-width:0; padding:30px 34px 64px; max-width:1240px}
+.view[hidden]{display:none}
+
+/* ---------- headings ---------- */
+h1{font-size:27px; font-weight:600; letter-spacing:-.015em; margin:0 0 6px}
+h2{font-size:17px; font-weight:600; margin:0 0 3px; letter-spacing:-.005em}
+h3{font-size:13.5px; font-weight:600; margin:0 0 8px}
+.lede{color:var(--muted); font-size:15px; max-width:74ch; margin:0 0 22px}
+.stamp{font-size:12.5px; color:var(--faint); margin:0 0 20px}
+.stamp b{font-weight:500; color:var(--muted)}
+.sec{margin:34px 0 0}
+.sec > header{margin-bottom:12px}
+.sec > header p{margin:0; color:var(--muted); font-size:13.5px; max-width:78ch}
+
+/* ---------- cards ---------- */
+.card{background:rgba(255,255,255,.92); border:1px solid rgba(109,63,213,.13); border-radius:8px; padding:18px 20px}
+.grid{display:grid; gap:14px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:1fr 1fr}
+
+/* ---------- stat ---------- */
+.stat .k{font-size:12.5px; color:var(--muted); margin-bottom:2px}
+.stat .v{font-size:29px; font-weight:600; letter-spacing:-.02em; line-height:1.12}
+.stat .n{font-size:12.5px; color:var(--faint); margin-top:3px}
+.stat .v.behind{color:var(--behind)} .stat .v.ahead{color:var(--ahead)}
+
+/* ---------- the gap strip (hero) ---------- */
+.striphead{display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap;
+  margin-bottom:10px}
+.strip{
+  position:relative; display:flex; align-items:stretch; gap:1px; height:152px;
+  padding:0; background:
+    linear-gradient(to bottom, transparent calc(50% - .5px), var(--rule) calc(50% - .5px),
+    var(--rule) calc(50% + .5px), transparent calc(50% + .5px));
+}
+.strip .col{flex:1 1 0; min-width:0; display:flex; flex-direction:column}
+.strip .up,.strip .dn{flex:1 1 50%; display:flex}
+.strip .up{align-items:flex-end}
+.strip .dn{align-items:flex-start}
+.strip .bar{width:100%; border-radius:1px}
+.strip .bar.behind{background:var(--behind)}
+.strip .bar.ahead{background:var(--ahead)}
+.strip .bar.onplan{background:#C7EFE8}
+.strip .bar.notlive{background:var(--blocked)}
+.stripaxis{display:flex; justify-content:space-between; font-size:12px; color:var(--faint); margin-top:8px}
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.dot{width:9px; height:9px; border-radius:2px; display:inline-block}
+
+/* ---------- alert ledger ---------- */
+.ledger{display:grid; gap:10px; grid-template-columns:repeat(2,1fr)}
+.alert{
+  background:var(--surface); border:1px solid var(--rule); border-radius:8px;
+  padding:14px 16px; display:flex; gap:14px; align-items:flex-start;
+}
+.alert .cnt{
+  flex:0 0 62px; font-size:24px; font-weight:600; line-height:1.1; letter-spacing:-.02em;
+}
+.alert .cnt small{display:block; font-size:11.5px; font-weight:400; color:var(--faint);
+  letter-spacing:0; margin-top:2px}
+.alert .body{flex:1 1 auto; min-width:0}
+.alert .name{font-size:14.5px; font-weight:600; margin-bottom:3px}
+.alert .rule{font-size:12.5px; color:var(--muted); line-height:1.42}
+.alert .flag{font-size:12px; color:var(--behind); margin-top:6px; line-height:1.4}
+.alert.high .cnt{color:var(--behind)}
+.alert.medium .cnt{color:var(--ahead)}
+.alert.low .cnt{color:var(--muted)}
+.alert.clear .cnt{color:var(--onplan)}
+.groupbar{display:flex; align-items:center; gap:10px; margin:22px 0 10px}
+.groupbar h3{margin:0}
+.groupbar .line{flex:1 1 auto; height:1px; background:var(--rule)}
+
+/* ---------- tables ---------- */
+.tablewrap{background:rgba(255,255,255,.94); border:1px solid rgba(109,63,213,.13); border-radius:8px; overflow:auto}
+table{width:100%; border-collapse:collapse; font-size:13.5px}
+th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--rule); vertical-align:middle}
+th{font-size:12px; font-weight:600; color:var(--muted); background:#FAF9FF; position:sticky; top:0;
+  white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#FBFAFF}
+td.r,th.r{text-align:right}
+.tname{font-weight:500}
+.tsub{font-size:12px; color:var(--faint)}
+.pill{display:inline-block; font-size:11.5px; font-weight:500; padding:2px 7px; border-radius:10px;
+  white-space:nowrap}
+.pill.behind{background:#FCE8EE; color:var(--behind)}
+.pill.ahead{background:#FFF3D8; color:#A87517}
+.pill.onplan{background:#DFF7F2; color:#268C80}
+.pill.notlive{background:#EFEAFF; color:var(--blocked)}
+.pill.below{background:#FCE8EE; color:var(--behind)}
+.pill.within{background:#F1F1F4; color:var(--muted)}
+.pill.above{background:#DFF7F2; color:#268C80}
+
+/* pacing mini bar */
+.mini{position:relative; width:130px; height:14px; background:#F0F0F3; border-radius:2px}
+.mini .fill{position:absolute; left:0; top:0; bottom:0; border-radius:2px; background:#C7EFE8}
+.mini .fill.behind{background:var(--behind)}
+.mini .fill.ahead{background:var(--ahead)}
+.mini .fill.onplan{background:var(--onplan)}
+.mini .fill.notlive{background:var(--blocked)}
+.mini .tick{position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--ink)}
+
+/* range band for creative */
+.band{position:relative; width:180px; height:16px}
+.band .track{position:absolute; left:0; right:0; top:7px; height:2px; background:#E8E7ED}
+.band .zone{position:absolute; top:3px; height:10px; background:#E9E5FF; border-radius:2px}
+.band .med{position:absolute; top:1px; height:14px; width:2px; background:var(--muted)}
+.band .act{position:absolute; top:0; height:16px; width:3px; border-radius:2px; background:var(--ink)}
+.band .act.below{background:var(--behind)} .band .act.above{background:var(--onplan)}
+
+/* stacked state bar */
+.stack{display:flex; height:14px; border-radius:2px; overflow:hidden; min-width:150px; background:#F0F0F3}
+.stack i{display:block; height:100%}
+
+/* filters */
+.filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px}
+.filters button{
+  font:inherit; font-size:12.5px; padding:5px 11px; border-radius:14px; cursor:pointer;
+  border:1px solid var(--rule); background:var(--surface); color:var(--muted);
+}
+.filters button[aria-pressed="true"]{background:var(--lavender); border-color:#D8D0FF; color:var(--lavender-deep)}
+.filters button:focus-visible{outline:2px solid var(--cyan); outline-offset:1px}
+
+/* coverage bars */
+.cov{display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:center; font-size:13px}
+.covbar{height:8px; background:#F0F0F3; border-radius:2px; overflow:hidden}
+.covbar i{display:block; height:100%; background:var(--cyan)}
+.covbar i.part{background:var(--ahead)}
+.covbar i.poor{background:var(--behind)}
+
+/* report catalogue */
+.note{
+  background:#FAF9FF; border:1px solid rgba(109,63,213,.13); border-left:3px solid var(--cyan);
+  border-radius:6px; padding:13px 16px; font-size:13.5px; color:var(--muted); line-height:1.5;
+}
+.note b{color:var(--ink); font-weight:600}
+.email{background:rgba(255,255,255,.94); border:1px solid rgba(109,63,213,.13); border-radius:8px; overflow:hidden}
+.email .hd{padding:14px 18px; border-bottom:1px solid var(--rule); background:#FAF9FF}
+.email .hd .subj{font-weight:600; font-size:14.5px}
+.email .hd .meta{font-size:12.5px; color:var(--faint); margin-top:3px}
+.email .bd{padding:18px}
+.email .bd p{margin:0 0 12px; font-size:13.5px; line-height:1.55; max-width:72ch}
+.email ul{margin:0 0 14px; padding-left:20px; font-size:13.5px; line-height:1.6}
+.email li{margin-bottom:5px}
+
+/* ---------- performance intelligence ---------- */
+.perf-hero{
+  background:
+    radial-gradient(260px 180px at 100% 0%, rgba(255,247,214,.72), transparent 76%),
+    linear-gradient(135deg, rgba(233,229,255,.78), rgba(221,247,242,.68));
+  border:1px solid rgba(109,63,213,.16); border-radius:10px; padding:22px 24px;
+}
+.perf-hero-grid{display:grid; grid-template-columns:minmax(0,1fr) 220px; gap:20px; align-items:center}
+.perf-eyebrow{font-size:11.5px; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--lavender-deep); margin-bottom:7px}
+.perf-hero h2{font-size:24px; line-height:1.15; letter-spacing:-.02em; margin:0 0 8px}
+.perf-hero p{font-size:13.5px; color:var(--muted); max-width:66ch; margin:0; line-height:1.55}
+.perf-tags{display:flex; flex-wrap:wrap; gap:7px; margin-top:15px}
+.perf-tag{font-size:11.5px; color:var(--lavender-deep); background:rgba(255,255,255,.68);
+  border:1px solid rgba(109,63,213,.16); border-radius:14px; padding:4px 9px}
+.perf-score{display:flex; flex-direction:column; align-items:center; gap:8px}
+.perf-donut{width:156px; height:156px; border-radius:50%; display:grid; place-items:center}
+.perf-donut .center{width:108px; height:108px; border-radius:50%; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; background:rgba(255,255,255,.92); text-align:center}
+.perf-donut .center strong{font-size:28px; line-height:1; letter-spacing:-.03em}
+.perf-donut .center span{font-size:11.5px; color:var(--muted); margin-top:5px}
+.perf-legend{display:flex; flex-wrap:wrap; justify-content:center; gap:7px 12px; font-size:11.5px; color:var(--muted)}
+.perf-legend span{display:inline-flex; align-items:center; gap:5px}
+.perf-legend i{width:8px; height:8px; border-radius:50%; display:inline-block}
+.perf-legend .below i{background:var(--behind)}
+.perf-legend .within i{background:var(--muted)}
+.perf-legend .above i{background:var(--onplan)}
+.perf-stat{min-height:100px}
+.perf-stat .v{font-size:25px}
+.perf-kpi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.perf-kpi{background:rgba(255,255,255,.92); border:1px solid var(--rule); border-radius:8px; padding:15px 16px}
+.perf-kpi .product{font-size:14px; font-weight:600; line-height:1.3}
+.perf-kpi .goal{font-size:12px; color:var(--faint); margin-top:3px}
+.perf-kpi .kpirow{display:grid; grid-template-columns:auto 1fr; gap:5px 10px; margin-top:13px; font-size:12.5px}
+.perf-kpi .kpirow b{font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.04em}
+.perf-kpi .primary{color:var(--lavender-deep); font-weight:600}
+.perf-kpi .secondary{color:var(--ink)}
+.perf-kpi .note{margin-top:13px; padding:8px 10px; font-size:12px; line-height:1.4; border-left-width:2px}
+.perf-table td{vertical-align:top}
+.perf-table .kpi{font-weight:600; color:var(--lavender-deep); white-space:nowrap}
+.perf-table .muted{color:var(--faint)}
+.perf-signal-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.perf-signal{background:rgba(255,255,255,.92); border:1px solid rgba(109,63,213,.13); border-radius:8px;
+  padding:16px 17px; min-height:170px}
+.perf-signal .label{font-size:11.5px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--lavender-deep)}
+.perf-signal h3{font-size:18px; line-height:1.2; margin:10px 0 7px; letter-spacing:-.01em}
+.perf-signal p{font-size:13px; color:var(--muted); line-height:1.5; margin:0}
+.perf-signal .foot{font-size:11.5px; color:var(--faint); margin-top:12px}
+.perf-action-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.perf-action{background:rgba(255,255,255,.92); border:1px solid var(--rule); border-radius:8px; padding:17px 18px}
+.perf-action.active{border-top:3px solid var(--cyan)}
+.perf-action.complete{border-top:3px solid var(--ahead)}
+.perf-action .tag{font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.perf-action h3{font-size:16px; margin:8px 0 6px}
+.perf-action p{font-size:13.5px; color:var(--muted); line-height:1.55; margin:0}
+.perf-ready{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.perf-ready-list{display:grid; gap:11px}
+.perf-ready-row{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; font-size:13px}
+.perf-ready-row .detail{font-size:12px; color:var(--faint); margin-top:2px}
+.perf-ready-row .pct{font-size:12px; color:var(--muted); white-space:nowrap}
+.perf-ready-row .covbar{grid-column:1 / -1; margin-top:-6px}
+.perf-guardrails{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.perf-guardrail{background:#FAF9FF; border:1px solid rgba(109,63,213,.13); border-radius:8px; padding:15px 16px}
+.perf-guardrail h3{margin-bottom:6px}
+.perf-guardrail p{font-size:13px; color:var(--muted); line-height:1.5; margin:0}
+
+/* ---------- performance work screen ---------- */
+.perf-controls{display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; margin:18px 0 14px}
+.perf-control{min-width:150px; background:rgba(255,255,255,.88); border:1px solid var(--rule);
+  border-radius:6px; padding:7px 11px}
+.perf-control .label{display:block; font-size:10.5px; color:var(--faint); text-transform:uppercase;
+  letter-spacing:.06em; margin-bottom:1px}
+.perf-control .value{font-size:13px; font-weight:500}
+.perf-control .value::after{content:'⌄'; color:var(--faint); margin-left:10px}
+.perf-sort-control{padding-right:9px}
+.perf-sort-control select{display:block; width:100%; border:0; background:transparent; color:var(--ink);
+  font:inherit; font-size:13px; font-weight:500; padding:0 18px 0 0; cursor:pointer; outline:0}
+.perf-refresh{margin-left:auto; align-self:center; font-size:12px; color:var(--muted)}
+.perf-summary-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+.perf-summary-grid .stat{min-height:94px}
+.perf-summary-grid .stat .v{font-size:25px}
+.perf-workspace{display:grid; grid-template-columns:minmax(0,1fr) 310px; gap:14px; align-items:start}
+.perf-panel{background:rgba(255,255,255,.92); border:1px solid rgba(109,63,213,.13); border-radius:8px; overflow:hidden}
+.perf-panel-head{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:17px 18px 13px}
+.perf-panel-head h2{margin-bottom:3px}
+.perf-panel-head p{font-size:13px; color:var(--muted); margin:0; line-height:1.45}
+.perf-viewtag{font-size:11.5px; color:var(--lavender-deep); background:var(--lavender); border-radius:12px; padding:3px 8px; white-space:nowrap}
+.perf-panel .tablewrap{border:0; border-radius:0}
+.perf-table-screen{font-size:12.5px}
+.perf-table-screen{min-width:1060px}
+.perf-table-screen th{font-size:11.5px}
+.perf-table-screen td,.perf-table-screen th{padding:10px 11px}
+.perf-table-screen td:nth-child(1){min-width:185px}
+.perf-table-screen td:nth-child(3){min-width:150px}
+.perf-table-screen td:nth-child(4){min-width:132px}
+.perf-table-screen td:nth-child(7){min-width:135px}
+.perf-table-screen tbody tr{cursor:pointer; transition:background .15s ease, box-shadow .15s ease}
+.perf-table-screen tbody tr[aria-selected="true"]{background:#FBFAFF; box-shadow:inset 3px 0 var(--cyan)}
+.perf-table-screen tbody tr:focus-visible{outline:2px solid var(--cyan); outline-offset:-2px}
+.perf-kpi-label{font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.04em; text-transform:uppercase}
+.perf-result{font-size:14px; font-weight:600; white-space:nowrap}
+.perf-result.below{color:var(--behind)} .perf-result.above{color:var(--onplan)}
+.perf-benchmark{font-size:12px; color:var(--muted); white-space:nowrap}
+.perf-action-text{font-size:12px; line-height:1.35; color:var(--muted)}
+.perf-owner{display:grid; gap:5px; min-width:150px}
+.perf-owner-line{display:flex; align-items:center; gap:6px; font-size:11.5px; line-height:1.2; white-space:nowrap}
+.perf-owner-role{display:inline-flex; align-items:center; justify-content:center; min-width:25px; padding:2px 5px;
+  border-radius:5px; font-size:9.5px; font-weight:600; letter-spacing:.03em}
+.perf-owner-role.am{background:var(--lavender); color:var(--lavender-deep)}
+.perf-owner-role.cm{background:var(--mint); color:#268C80}
+.perf-support{display:grid; gap:4px; white-space:nowrap}
+.perf-support-line{display:flex; align-items:baseline; gap:6px}
+.perf-support-line b{font-size:10px; color:var(--faint); text-transform:uppercase; letter-spacing:.04em; font-weight:600}
+.perf-support-line span{font-size:12.5px; color:var(--ink); font-weight:500}
+.perf-delivery{font-size:12px; font-weight:500; white-space:nowrap}
+.perf-delivery.missing{color:var(--faint); font-weight:400}
+.perf-delivery-note{font-size:10.5px; line-height:1.3; color:var(--faint); margin-top:3px; max-width:125px}
+.perf-detail-metrics{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px}
+.perf-detail-metric{background:rgba(255,255,255,.72); border:1px solid rgba(109,63,213,.12); border-radius:6px; padding:9px 10px}
+.perf-detail-metric .k{font-size:10px; color:var(--faint); text-transform:uppercase; letter-spacing:.04em}
+.perf-detail-metric .v{font-size:15px; font-weight:600; line-height:1.15; margin-top:3px}
+.perf-detail-metric .v.missing{font-size:12px; color:var(--faint); font-weight:500}
+.perf-detail-metric .n{font-size:10.5px; color:var(--muted); line-height:1.25; margin-top:3px}
+.perf-impact{font-size:11.5px; color:var(--muted); line-height:1.35; margin-top:9px}
+.perf-impact strong{font-weight:600; color:var(--ink)}
+.perf-data-note{display:flex; align-items:flex-start; gap:8px; margin-top:12px; padding:10px 12px;
+  background:#FAF9FF; border:1px solid rgba(109,63,213,.12); border-radius:6px; color:var(--muted);
+  font-size:11.5px; line-height:1.4}
+.perf-data-note .mark{color:var(--cyan); font-size:14px; line-height:1.1}
+.perf-detail{background:linear-gradient(160deg,rgba(233,229,255,.74),rgba(255,255,255,.94));
+  border:1px solid rgba(109,63,213,.16); border-radius:8px; padding:18px}
+.perf-detail .label{font-size:10.5px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--lavender-deep)}
+.perf-detail h2{font-size:20px; line-height:1.2; margin:7px 0 2px}
+.perf-detail .sub{font-size:12.5px; color:var(--muted); line-height:1.4}
+.perf-detail-status{display:flex; align-items:center; gap:8px; margin:14px 0 16px}
+.perf-detail-status .tsub{font-size:11.5px}
+.perf-scoreline{display:flex; align-items:flex-end; gap:10px; padding:13px 0 15px; border-top:1px solid rgba(109,63,213,.13); border-bottom:1px solid rgba(109,63,213,.13)}
+.perf-scoreline strong{font-size:37px; line-height:1; letter-spacing:-.04em; color:var(--behind)}
+.perf-scoreline strong.above{color:var(--onplan)}
+.perf-scoreline span{font-size:12px; color:var(--muted); padding-bottom:3px}
+.perf-detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; margin-top:15px}
+.perf-detail-grid .k{font-size:10.5px; color:var(--faint); text-transform:uppercase; letter-spacing:.05em}
+.perf-detail-grid .v{font-size:13px; font-weight:500; margin-top:2px}
+.perf-benchmark-box{background:rgba(255,255,255,.75); border:1px solid rgba(109,63,213,.13); border-radius:6px; padding:11px 12px; margin-top:16px}
+.perf-benchmark-box .range{font-size:17px; font-weight:600; color:var(--lavender-deep); margin-top:2px}
+.perf-benchmark-box p{font-size:11.5px; color:var(--muted); line-height:1.4; margin:3px 0 0}
+.perf-next{margin-top:16px}
+.perf-next h3{font-size:13.5px; margin-bottom:6px}
+.perf-next ul{margin:0; padding-left:17px; color:var(--muted); font-size:12.5px; line-height:1.5}
+.perf-next li{margin-bottom:5px}
+.perf-insight-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.perf-insight{background:rgba(255,255,255,.92); border:1px solid var(--rule); border-radius:8px; padding:15px 17px}
+.perf-insight.positive{border-left:3px solid var(--onplan)}
+.perf-insight.priority{border-left:3px solid var(--behind)}
+.perf-insight h3{font-size:14px; margin:0 0 5px}
+.perf-insight p{font-size:13px; color:var(--muted); line-height:1.5; margin:0}
+.perf-insight .eyebrow{font-size:10.5px; font-weight:600; color:var(--faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px}
+.perf-context{display:flex; align-items:flex-start; gap:10px; background:#FAF9FF; border:1px solid rgba(109,63,213,.13);
+  border-radius:6px; padding:11px 13px; font-size:12px; color:var(--muted); line-height:1.45}
+.perf-context .mark{flex:0 0 auto; color:var(--cyan); font-size:15px; line-height:1}
+
+@media (max-width:920px){
+  .shell{flex-direction:column}
+  .rail{width:auto; flex:none; height:auto; position:static; padding:18px 0 12px}
+  .brand{padding:0 18px 14px}
+  .nav{display:flex; gap:6px; overflow-x:auto; padding:12px 14px 2px}
+  .nav button{white-space:nowrap; width:auto}
+  .nav .navnote,.railfoot{display:none}
+  .main{padding:22px 16px 48px}
+  .g4,.g3,.g2,.ledger,.perf-hero-grid,.perf-kpi-grid,.perf-signal-grid,
+  .perf-action-grid,.perf-ready,.perf-guardrails,.perf-summary-grid,.perf-workspace,
+  .perf-insight-grid{grid-template-columns:1fr}
+  .perf-refresh{margin-left:0}
+  .perf-detail-metrics{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="rail" aria-label="Dashboards">
+    <div class="brand">
+      <div class="mark">Insights&nbsp;Hub</div>
+      <div class="sub">Campaign delivery console</div>
+    </div>
+    <div class="nav" role="tablist">
+      <button role="tab" data-view="today" aria-current="true">Today</button>
+      <div class="navnote">Triage queue for account managers</div>
+      <button role="tab" data-view="pacing">Pacing</button>
+      <div class="navnote">Planned against delivered, by package</div>
+      <button role="tab" data-view="creative">Creative</button>
+      <div class="navnote">Format performance against range</div>
+      <button role="tab" data-view="performance">Performance</button>
+      <div class="navnote">KPIs and benchmarks in context</div>
+      <button role="tab" data-view="book">Book</button>
+      <div class="navnote">Pod and account manager rollup</div>
+      <button role="tab" data-view="reports">Reports</button>
+      <div class="navnote">What gets sent, to whom, when</div>
+    </div>
+    <div class="railfoot" id="railfoot"></div>
+  </nav>
+
+  <main class="main">
+    <section class="view" id="view-today"></section>
+    <section class="view" id="view-pacing" hidden></section>
+    <section class="view" id="view-creative" hidden></section>
+    <section class="view" id="view-performance" hidden></section>
+    <section class="view" id="view-book" hidden></section>
+    <section class="view" id="view-reports" hidden></section>
+  </main>
+</div>
+
+<script id="payload" type="application/json">{"asOf":"2026-09-03","sources":[{"name":"Weekly pacing extract (BURT)","rows":627,"asOf":"2026-09-03 17:28"},{"name":"Portfolio health extract (BURT)","rows":523,"asOf":"2026-09-01 17:14"}],"totals":{"rows":627,"orders":133,"packages":393,"ads":574,"ams":31,"teams":6,"live":388,"behind":24,"ahead":39,"notlive":32,"onplan":293,"shortfall":117889896.91310103,"goal":1074619559.0,"delivered":613855558.0,"pacingIndex":0.9945778539748844,"risk":3467706.044663538,"value":28542986.825253747,"valueCoverage":73,"portfolioCpm":32.72647948250109,"riskRanked":4226511.646307994},"alerts":[{"key":"notlive","label":"Live but not delivering","group":"Launch","severity":"high","rule":"Flight started 5+ days ago and is delivering under 5% of what the calendar expects.","count":32,"unit":"packages","fieldGap":null},{"key":"delayed","label":"Ad live with no impressions","group":"Launch","severity":"high","rule":"Ad start date passed 2+ days ago and no first-party impressions have been recorded.","count":0,"unit":"lines","fieldGap":null},{"key":"upcoming","label":"Starting in the next 7 days","group":"Launch","severity":"low","rule":"Package flight begins within seven days and needs trafficking confirmed.","count":2,"unit":"packages","fieldGap":null},{"key":"behind","label":"Package behind plan","group":"Pacing","severity":"high","rule":"Delivered share of goal trails elapsed share of flight by more than 10 points.","count":24,"unit":"packages","fieldGap":null},{"key":"ahead","label":"Package over-delivering","group":"Pacing","severity":"medium","rule":"Ahead of the calendar by more than 10 points, so inventory is going out without revenue against it.","count":39,"unit":"packages","fieldGap":null},{"key":"under","label":"Line under-pacing","group":"Pacing","severity":"medium","rule":"Billable pacing rate under 80%, ignoring lines booked with a placeholder goal.","count":96,"unit":"lines","fieldGap":null},{"key":"placeholder","label":"Placeholder goal on a billable line","group":"Data quality","severity":"medium","rule":"Line carries an impression goal of 1 or less, so its pacing rate is arithmetic noise.","count":88,"unit":"lines","fieldGap":null},{"key":"nogoal","label":"Package goal too small to pace","group":"Data quality","severity":"low","rule":"Package impression goal is at or under 1,000, so a percentage against it is not meaningful.","count":2,"unit":"packages","fieldGap":null},{"key":"nonads","label":"Line not independently ad-served","group":"Data quality","severity":"medium","rule":"Non-ad-served and organic-handle placements count clicks and impressions in different systems, so their click-through cannot be compared with ad-served inventory.","count":163,"unit":"lines","fieldGap":null},{"key":"enddate","label":"End date mismatch","group":"Data quality","severity":"medium","rule":"Ad end date does not match the package end date it rolls up to.","count":16,"unit":"lines","fieldGap":null},{"key":"disc","label":"First- against third-party discrepancy","group":"Data quality","severity":"high","rule":"Third-party impressions differ from first-party by more than 10% on a line where both are present.","count":95,"unit":"lines","fieldGap":null},{"key":"noteam","label":"Line with no account management team","group":"Data quality","severity":"low","rule":"Row cannot be routed to a vertical owner, so it lands in the operations queue.","count":13,"unit":"lines","fieldGap":null},{"key":"thirdparty","label":"Third-party report needed","group":"Data quality","severity":"low","rule":"Third-party vendor is named on the line but no vendor numbers have landed.","count":0,"unit":"lines","fieldGap":"Third Party Vendor is not in the weekly extract."},{"key":"revenue","label":"Value at risk","group":"Commercial","severity":"high","rule":"Projected shortfall priced at the order's booked value.","count":97,"unit":"packages","fieldGap":"Priced from the value carried in the order name; AP Net Cost is not in the extract."}],"strip":[{"gap":-0.9444,"state":"notlive"},{"gap":-0.9062,"state":"notlive"},{"gap":-0.8857,"state":"notlive"},{"gap":-0.7525,"state":"notlive"},{"gap":-0.7096,"state":"notlive"},{"gap":-0.7033,"state":"notlive"},{"gap":-0.7032,"state":"notlive"},{"gap":-0.6888,"state":"notlive"},{"gap":-0.686,"state":"notlive"},{"gap":-0.6764,"state":"notlive"},{"gap":-0.6764,"state":"notlive"},{"gap":-0.625,"state":"notlive"},{"gap":-0.6019,"state":"behind"},{"gap":-0.5569,"state":"notlive"},{"gap":-0.5405,"state":"notlive"},{"gap":-0.5296,"state":"notlive"},{"gap":-0.4754,"state":"notlive"},{"gap":-0.4193,"state":"notlive"},{"gap":-0.3863,"state":"notlive"},{"gap":-0.3838,"state":"behind"},{"gap":-0.378,"state":"notlive"},{"gap":-0.378,"state":"notlive"},{"gap":-0.3744,"state":"behind"},{"gap":-0.3448,"state":"notlive"},{"gap":-0.3414,"state":"notlive"},{"gap":-0.3333,"state":"notlive"},{"gap":-0.3177,"state":"notlive"},{"gap":-0.3095,"state":"behind"},{"gap":-0.3023,"state":"behind"},{"gap":-0.3,"state":"notlive"},{"gap":-0.2981,"state":"notlive"},{"gap":-0.2981,"state":"notlive"},{"gap":-0.2939,"state":"behind"},{"gap":-0.2902,"state":"notlive"},{"gap":-0.2858,"state":"behind"},{"gap":-0.2748,"state":"behind"},{"gap":-0.2702,"state":"notlive"},{"gap":-0.2532,"state":"behind"},{"gap":-0.2358,"state":"behind"},{"gap":-0.2302,"state":"behind"},{"gap":-0.229,"state":"behind"},{"gap":-0.2209,"state":"behind"},{"gap":-0.2208,"state":"behind"},{"gap":-0.2195,"state":"notlive"},{"gap":-0.2162,"state":"notlive"},{"gap":-0.2057,"state":"behind"},{"gap":-0.1739,"state":"behind"},{"gap":-0.1666,"state":"behind"},{"gap":-0.1658,"state":"behind"},{"gap":-0.1464,"state":"behind"},{"gap":-0.133,"state":"behind"},{"gap":-0.1221,"state":"behind"},{"gap":-0.1155,"state":"behind"},{"gap":-0.1077,"state":"notlive"},{"gap":-0.1055,"state":"behind"},{"gap":-0.105,"state":"behind"},{"gap":-0.0944,"state":"onplan"},{"gap":-0.0896,"state":"onplan"},{"gap":-0.0864,"state":"onplan"},{"gap":-0.0801,"state":"onplan"},{"gap":-0.0771,"state":"onplan"},{"gap":-0.0766,"state":"onplan"},{"gap":-0.0711,"state":"onplan"},{"gap":-0.069,"state":"onplan"},{"gap":-0.069,"state":"onplan"},{"gap":-0.0689,"state":"onplan"},{"gap":-0.0689,"state":"onplan"},{"gap":-0.0683,"state":"onplan"},{"gap":-0.0682,"state":"onplan"},{"gap":-0.066,"state":"onplan"},{"gap":-0.0575,"state":"onplan"},{"gap":-0.0571,"state":"onplan"},{"gap":-0.0539,"state":"onplan"},{"gap":-0.0512,"state":"onplan"},{"gap":-0.0477,"state":"onplan"},{"gap":-0.0464,"state":"onplan"},{"gap":-0.0453,"state":"onplan"},{"gap":-0.0447,"state":"onplan"},{"gap":-0.0446,"state":"onplan"},{"gap":-0.0444,"state":"onplan"},{"gap":-0.0442,"state":"onplan"},{"gap":-0.044,"state":"onplan"},{"gap":-0.0439,"state":"onplan"},{"gap":-0.0431,"state":"onplan"},{"gap":-0.0431,"state":"onplan"},{"gap":-0.043,"state":"onplan"},{"gap":-0.0427,"state":"onplan"},{"gap":-0.0423,"state":"onplan"},{"gap":-0.0416,"state":"onplan"},{"gap":-0.0416,"state":"onplan"},{"gap":-0.0414,"state":"onplan"},{"gap":-0.0413,"state":"onplan"},{"gap":-0.037,"state":"onplan"},{"gap":-0.0366,"state":"onplan"},{"gap":-0.0358,"state":"onplan"},{"gap":-0.0357,"state":"onplan"},{"gap":-0.0349,"state":"onplan"},{"gap":-0.0339,"state":"onplan"},{"gap":-0.0333,"state":"onplan"},{"gap":-0.0333,"state":"onplan"},{"gap":-0.0331,"state":"onplan"},{"gap":-0.0321,"state":"onplan"},{"gap":-0.0316,"state":"onplan"},{"gap":-0.0312,"state":"onplan"},{"gap":-0.0308,"state":"onplan"},{"gap":-0.0304,"state":"onplan"},{"gap":-0.0278,"state":"onplan"},{"gap":-0.0271,"state":"onplan"},{"gap":-0.0269,"state":"onplan"},{"gap":-0.0262,"state":"onplan"},{"gap":-0.0239,"state":"onplan"},{"gap":-0.0234,"state":"onplan"},{"gap":-0.0208,"state":"onplan"},{"gap":-0.0201,"state":"onplan"},{"gap":-0.0199,"state":"onplan"},{"gap":-0.019,"state":"onplan"},{"gap":-0.0179,"state":"onplan"},{"gap":-0.017,"state":"onplan"},{"gap":-0.0169,"state":"onplan"},{"gap":-0.0169,"state":"onplan"},{"gap":-0.016,"state":"onplan"},{"gap":-0.0151,"state":"onplan"},{"gap":-0.0147,"state":"onplan"},{"gap":-0.0142,"state":"onplan"},{"gap":-0.0138,"state":"onplan"},{"gap":-0.0138,"state":"onplan"},{"gap":-0.0136,"state":"onplan"},{"gap":-0.0129,"state":"onplan"},{"gap":-0.0128,"state":"onplan"},{"gap":-0.0127,"state":"onplan"},{"gap":-0.0126,"state":"onplan"},{"gap":-0.0125,"state":"onplan"},{"gap":-0.012,"state":"onplan"},{"gap":-0.0118,"state":"onplan"},{"gap":-0.0116,"state":"onplan"},{"gap":-0.0115,"state":"onplan"},{"gap":-0.0112,"state":"onplan"},{"gap":-0.0104,"state":"onplan"},{"gap":-0.0104,"state":"onplan"},{"gap":-0.01,"state":"onplan"},{"gap":-0.01,"state":"onplan"},{"gap":-0.0099,"state":"onplan"},{"gap":-0.0096,"state":"onplan"},{"gap":-0.0094,"state":"onplan"},{"gap":-0.0093,"state":"onplan"},{"gap":-0.0091,"state":"onplan"},{"gap":-0.0091,"state":"onplan"},{"gap":-0.0089,"state":"onplan"},{"gap":-0.0088,"state":"onplan"},{"gap":-0.0078,"state":"onplan"},{"gap":-0.0078,"state":"onplan"},{"gap":-0.007,"state":"onplan"},{"gap":-0.0058,"state":"onplan"},{"gap":-0.0057,"state":"onplan"},{"gap":-0.0044,"state":"onplan"},{"gap":-0.0043,"state":"onplan"},{"gap":-0.0041,"state":"onplan"},{"gap":-0.0041,"state":"onplan"},{"gap":-0.0039,"state":"onplan"},{"gap":-0.0037,"state":"onplan"},{"gap":-0.0036,"state":"onplan"},{"gap":-0.0028,"state":"onplan"},{"gap":-0.0026,"state":"onplan"},{"gap":-0.0025,"state":"onplan"},{"gap":-0.0022,"state":"onplan"},{"gap":-0.0021,"state":"onplan"},{"gap":-0.0021,"state":"onplan"},{"gap":-0.0019,"state":"onplan"},{"gap":-0.0016,"state":"onplan"},{"gap":-0.0015,"state":"onplan"},{"gap":-0.0013,"state":"onplan"},{"gap":-0.0013,"state":"onplan"},{"gap":-0.0012,"state":"onplan"},{"gap":-0.0011,"state":"onplan"},{"gap":-0.001,"state":"onplan"},{"gap":-0.0008,"state":"onplan"},{"gap":-0.0008,"state":"onplan"},{"gap":-0.0005,"state":"onplan"},{"gap":-0.0004,"state":"onplan"},{"gap":-0.0003,"state":"onplan"},{"gap":-0.0002,"state":"onplan"},{"gap":-0.0001,"state":"onplan"},{"gap":-0.0001,"state":"onplan"},{"gap":0.0,"state":"onplan"},{"gap":0.0,"state":"onplan"},{"gap":0.0005,"state":"onplan"},{"gap":0.0006,"state":"onplan"},{"gap":0.0008,"state":"onplan"},{"gap":0.0008,"state":"onplan"},{"gap":0.0009,"state":"onplan"},{"gap":0.0012,"state":"onplan"},{"gap":0.0012,"state":"onplan"},{"gap":0.0014,"state":"onplan"},{"gap":0.0015,"state":"onplan"},{"gap":0.0016,"state":"onplan"},{"gap":0.0018,"state":"onplan"},{"gap":0.0019,"state":"onplan"},{"gap":0.002,"state":"onplan"},{"gap":0.0022,"state":"onplan"},{"gap":0.0023,"state":"onplan"},{"gap":0.0024,"state":"onplan"},{"gap":0.0028,"state":"onplan"},{"gap":0.0029,"state":"onplan"},{"gap":0.0031,"state":"onplan"},{"gap":0.0033,"state":"onplan"},{"gap":0.0034,"state":"onplan"},{"gap":0.0034,"state":"onplan"},{"gap":0.0038,"state":"onplan"},{"gap":0.004,"state":"onplan"},{"gap":0.0044,"state":"onplan"},{"gap":0.0046,"state":"onplan"},{"gap":0.0049,"state":"onplan"},{"gap":0.005,"state":"onplan"},{"gap":0.0055,"state":"onplan"},{"gap":0.0056,"state":"onplan"},{"gap":0.0057,"state":"onplan"},{"gap":0.0059,"state":"onplan"},{"gap":0.0061,"state":"onplan"},{"gap":0.0065,"state":"onplan"},{"gap":0.0068,"state":"onplan"},{"gap":0.0069,"state":"onplan"},{"gap":0.007,"state":"onplan"},{"gap":0.008,"state":"onplan"},{"gap":0.0082,"state":"onplan"},{"gap":0.0087,"state":"onplan"},{"gap":0.0093,"state":"onplan"},{"gap":0.0094,"state":"onplan"},{"gap":0.0096,"state":"onplan"},{"gap":0.0096,"state":"onplan"},{"gap":0.01,"state":"onplan"},{"gap":0.0108,"state":"onplan"},{"gap":0.0111,"state":"onplan"},{"gap":0.0111,"state":"onplan"},{"gap":0.0112,"state":"onplan"},{"gap":0.0117,"state":"onplan"},{"gap":0.0119,"state":"onplan"},{"gap":0.0121,"state":"onplan"},{"gap":0.0121,"state":"onplan"},{"gap":0.0134,"state":"onplan"},{"gap":0.0136,"state":"onplan"},{"gap":0.0143,"state":"onplan"},{"gap":0.0145,"state":"onplan"},{"gap":0.0145,"state":"onplan"},{"gap":0.0149,"state":"onplan"},{"gap":0.0152,"state":"onplan"},{"gap":0.0152,"state":"onplan"},{"gap":0.0154,"state":"onplan"},{"gap":0.0154,"state":"onplan"},{"gap":0.0156,"state":"onplan"},{"gap":0.0157,"state":"onplan"},{"gap":0.016,"state":"onplan"},{"gap":0.0165,"state":"onplan"},{"gap":0.0168,"state":"onplan"},{"gap":0.0168,"state":"onplan"},{"gap":0.017,"state":"onplan"},{"gap":0.0172,"state":"onplan"},{"gap":0.0179,"state":"onplan"},{"gap":0.019,"state":"onplan"},{"gap":0.0194,"state":"onplan"},{"gap":0.0195,"state":"onplan"},{"gap":0.0196,"state":"onplan"},{"gap":0.0198,"state":"onplan"},{"gap":0.0203,"state":"onplan"},{"gap":0.0208,"state":"onplan"},{"gap":0.021,"state":"onplan"},{"gap":0.0211,"state":"onplan"},{"gap":0.0214,"state":"onplan"},{"gap":0.0214,"state":"onplan"},{"gap":0.0214,"state":"onplan"},{"gap":0.0214,"state":"onplan"},{"gap":0.0216,"state":"onplan"},{"gap":0.022,"state":"onplan"},{"gap":0.0221,"state":"onplan"},{"gap":0.0223,"state":"onplan"},{"gap":0.0223,"state":"onplan"},{"gap":0.0226,"state":"onplan"},{"gap":0.0229,"state":"onplan"},{"gap":0.0237,"state":"onplan"},{"gap":0.0239,"state":"onplan"},{"gap":0.0242,"state":"onplan"},{"gap":0.0248,"state":"onplan"},{"gap":0.025,"state":"onplan"},{"gap":0.0266,"state":"onplan"},{"gap":0.0275,"state":"onplan"},{"gap":0.0287,"state":"onplan"},{"gap":0.0291,"state":"onplan"},{"gap":0.0296,"state":"onplan"},{"gap":0.0299,"state":"onplan"},{"gap":0.0301,"state":"onplan"},{"gap":0.0306,"state":"onplan"},{"gap":0.0313,"state":"onplan"},{"gap":0.0316,"state":"onplan"},{"gap":0.0317,"state":"onplan"},{"gap":0.0318,"state":"onplan"},{"gap":0.032,"state":"onplan"},{"gap":0.0321,"state":"onplan"},{"gap":0.0323,"state":"onplan"},{"gap":0.0323,"state":"onplan"},{"gap":0.0323,"state":"onplan"},{"gap":0.0324,"state":"onplan"},{"gap":0.0324,"state":"onplan"},{"gap":0.0331,"state":"onplan"},{"gap":0.0349,"state":"onplan"},{"gap":0.035,"state":"onplan"},{"gap":0.0356,"state":"onplan"},{"gap":0.0366,"state":"onplan"},{"gap":0.0372,"state":"onplan"},{"gap":0.0376,"state":"onplan"},{"gap":0.038,"state":"onplan"},{"gap":0.0387,"state":"onplan"},{"gap":0.0392,"state":"onplan"},{"gap":0.0398,"state":"onplan"},{"gap":0.0407,"state":"onplan"},{"gap":0.0407,"state":"onplan"},{"gap":0.0412,"state":"onplan"},{"gap":0.0412,"state":"onplan"},{"gap":0.0443,"state":"onplan"},{"gap":0.0464,"state":"onplan"},{"gap":0.0476,"state":"onplan"},{"gap":0.0522,"state":"onplan"},{"gap":0.0542,"state":"onplan"},{"gap":0.0563,"state":"onplan"},{"gap":0.0579,"state":"onplan"},{"gap":0.0592,"state":"onplan"},{"gap":0.0593,"state":"onplan"},{"gap":0.0595,"state":"onplan"},{"gap":0.0607,"state":"onplan"},{"gap":0.0626,"state":"onplan"},{"gap":0.0628,"state":"onplan"},{"gap":0.0642,"state":"onplan"},{"gap":0.0662,"state":"onplan"},{"gap":0.0664,"state":"onplan"},{"gap":0.0682,"state":"onplan"},{"gap":0.0731,"state":"onplan"},{"gap":0.0768,"state":"onplan"},{"gap":0.0769,"state":"onplan"},{"gap":0.0779,"state":"onplan"},{"gap":0.0781,"state":"onplan"},{"gap":0.0793,"state":"onplan"},{"gap":0.0796,"state":"onplan"},{"gap":0.0815,"state":"onplan"},{"gap":0.0827,"state":"onplan"},{"gap":0.0834,"state":"onplan"},{"gap":0.0838,"state":"onplan"},{"gap":0.0838,"state":"onplan"},{"gap":0.0839,"state":"onplan"},{"gap":0.0841,"state":"onplan"},{"gap":0.0857,"state":"onplan"},{"gap":0.0986,"state":"onplan"},{"gap":0.1036,"state":"ahead"},{"gap":0.1079,"state":"ahead"},{"gap":0.1088,"state":"ahead"},{"gap":0.1105,"state":"ahead"},{"gap":0.111,"state":"ahead"},{"gap":0.1111,"state":"ahead"},{"gap":0.1174,"state":"ahead"},{"gap":0.1201,"state":"ahead"},{"gap":0.1209,"state":"ahead"},{"gap":0.1236,"state":"ahead"},{"gap":0.1286,"state":"ahead"},{"gap":0.1321,"state":"ahead"},{"gap":0.1458,"state":"ahead"},{"gap":0.1494,"state":"ahead"},{"gap":0.1518,"state":"ahead"},{"gap":0.1686,"state":"ahead"},{"gap":0.1731,"state":"ahead"},{"gap":0.1814,"state":"ahead"},{"gap":0.1873,"state":"ahead"},{"gap":0.1894,"state":"ahead"},{"gap":0.1913,"state":"ahead"},{"gap":0.193,"state":"ahead"},{"gap":0.1939,"state":"ahead"},{"gap":0.1962,"state":"ahead"},{"gap":0.2014,"state":"ahead"},{"gap":0.2204,"state":"ahead"},{"gap":0.2244,"state":"ahead"},{"gap":0.2258,"state":"ahead"},{"gap":0.2316,"state":"ahead"},{"gap":0.2443,"state":"ahead"},{"gap":0.2548,"state":"ahead"},{"gap":0.318,"state":"ahead"},{"gap":0.3424,"state":"ahead"},{"gap":0.3776,"state":"ahead"},{"gap":0.4243,"state":"ahead"},{"gap":0.5789,"state":"ahead"},{"gap":0.6279,"state":"ahead"},{"gap":0.6517,"state":"ahead"},{"gap":0.7177,"state":"ahead"}],"worklist":[{"id":30815,"package":"WH - Organic Social","advertiser":"NYU Langone Health","order":42160,"am":"Sophie Doukas","team":"TTCE","start":"Apr 21","end":"Jan 31","daysLeft":150,"goal":15000000.0,"delivered":2463000.0,"deliveredPct":0.1642,"expected":0.47368421052631576,"gap":-0.30948421052631575,"shortfall":9800333.333333332,"imprOver":-4642263.157894736,"lines":3,"state":"behind","value":532931.5157624554,"risk":348193.76655404334,"riskEst":false},{"id":33382,"package":"Apple News Harper's BAZAAR Sponsorship","advertiser":"Bulgari Corporation of America","order":65027,"am":"Ryan Zakin","team":"Fashion - Lux","start":"Aug 18","end":"Oct 31","daysLeft":58,"goal":8000000.0,"delivered":0.0,"deliveredPct":0.0,"expected":0.21621621621621623,"gap":-0.21621621621621623,"shortfall":8000000.0,"imprOver":-1729729.72972973,"lines":1,"state":"notlive","value":288613.74058271403,"risk":288613.74058271403,"riskEst":false},{"id":32194,"package":"Pre Roll","advertiser":"Orforglipron","order":62325,"am":"Elena Baquerizo","team":"Pharma - Spirits","start":"Apr 17","end":"Sep 30","daysLeft":27,"goal":27272728.0,"delivered":16811028.0,"deliveredPct":0.6164043435625508,"expected":0.8373493975903614,"gap":-0.22094505402781062,"shortfall":7196248.517985612,"imprOver":-6025774.361445781,"lines":1,"state":"behind","value":null,"risk":235507.879474835,"riskEst":true},{"id":33593,"package":"8/1 -  Dark Social via Meta","advertiser":"Fendi","order":65677,"am":"Ryan Zakin","team":"Fashion - Lux","start":"Aug 01","end":"Oct 21","daysLeft":48,"goal":9800000.0,"delivered":1976245.0,"deliveredPct":0.2016576530612245,"expected":0.4074074074074074,"gap":-0.2057497543461829,"shortfall":4949216.818181818,"imprOver":-2016347.5925925924,"lines":1,"state":"behind","value":420000.0,"risk":212109.29220779223,"riskEst":false},{"id":33472,"package":"Dark Social via Tik Tok - 8/27-9/30","advertiser":"Pandora Jewelry LLC","order":62066,"am":"Katie Lavitt","team":"Fashion - Lux","start":"Aug 27","end":"Sep 30","daysLeft":27,"goal":4500000.0,"delivered":144042.0,"deliveredPct":0.032009333333333334,"expected":0.20588235294117646,"gap":-0.17387301960784313,"shortfall":3800367.4285714286,"imprOver":-782428.5882352941,"lines":1,"state":"behind","value":187535.16284303306,"risk":158378.33879566705,"riskEst":false},{"id":30814,"package":"MH - Organic Social","advertiser":"NYU Langone Health","order":42160,"am":"Sophie Doukas","team":"TTCE","start":"Mar 25","end":"Jan 31","daysLeft":150,"goal":10000000.0,"delivered":2984675.0,"deliveredPct":0.2984675,"expected":0.5192307692307693,"gap":-0.22076326923076928,"shortfall":4251737.037037037,"imprOver":-2207632.692307693,"lines":2,"state":"behind","value":355287.6771749703,"risk":151058.97758476794,"riskEst":false},{"id":33209,"package":"ROS - 100% SOS","advertiser":"Van Cleef & Arpels Inc","order":64249,"am":"Katie Lavitt","team":"Fashion - Lux","start":"Aug 25","end":"Sep 25","daysLeft":22,"goal":1140940.0,"delivered":42302.0,"deliveredPct":0.03707644573772503,"expected":0.2903225806451613,"gap":-0.2532461349074363,"shortfall":995233.1111111111,"imprOver":-288938.64516129036,"lines":2,"state":"behind","value":168312.75659456325,"risk":146817.9118843185,"riskEst":false},{"id":33387,"package":"Editorial Takeover","advertiser":"Bulgari Corporation of America","order":65027,"am":"Ryan Zakin","team":"Fashion - Lux","start":"Aug 18","end":"Sep 30","daysLeft":27,"goal":3500004.0,"delivered":244172.0,"deliveredPct":0.06976334884188704,"expected":0.37209302325581395,"gap":-0.3023296744139269,"shortfall":2843791.75,"imprOver":-1058155.0697674418,"lines":3,"state":"behind","value":126268.65581180768,"risk":102594.6718007203,"riskEst":false},{"id":32441,"package":"Popular Mechanics Content Package","advertiser":"The Home Depot Incorporated","order":63303,"am":"Sydney Malkin","team":"Mass Retail - Home & Design","start":"Jun 22","end":"Sep 27","daysLeft":24,"goal":26001.0,"delivered":1.0,"deliveredPct":3.846005922849121e-05,"expected":0.7525773195876289,"gap":-0.7525388595284004,"shortfall":25999.671232876713,"imprOver":-19566.76288659794,"lines":2,"state":"notlive","value":76000.0,"risk":75996.11606086805,"riskEst":false},{"id":32443,"package":"House Beautiful Content Package","advertiser":"The Home Depot Incorporated","order":63303,"am":"Sydney Malkin","team":"Mass Retail - Home & Design","start":"Aug 06","end":"Oct 29","daysLeft":56,"goal":26001.0,"delivered":1.0,"deliveredPct":3.846005922849121e-05,"expected":0.3333333333333333,"gap":-0.33329487327410484,"shortfall":25998.0,"imprOver":-8666.0,"lines":2,"state":"notlive","value":76000.0,"risk":75991.2311064959,"riskEst":false},{"id":28220,"package":"Influencer Hub- Content","advertiser":"Lenacapavir","order":38580,"am":"Ericia Byer","team":"Pharma - Spirits","start":"May 29","end":"Sep 30","daysLeft":27,"goal":6590461.0,"delivered":2625809.0,"deliveredPct":0.3984256943482406,"expected":0.782258064516129,"gap":-0.3838323701678884,"shortfall":3233756.711340206,"imprOver":-2529632.266129032,"lines":6,"state":"behind","value":144981.86133199366,"risk":71138.58455499996,"riskEst":false},{"id":33148,"package":"Pkg 224 HDM | Editorial Sponsorship Pack","advertiser":"Marriott Hotels & Resorts","order":64373,"am":"Lexie Kilpatrick","team":"TTCE","start":"Aug 14","end":"Sep 14","daysLeft":11,"goal":1666668.0,"delivered":72032.0,"deliveredPct":0.04321916542466766,"expected":0.6451612903225806,"gap":-0.601942124897913,"shortfall":1555018.4,"imprOver":-1003237.6774193549,"lines":2,"state":"behind","value":55331.21715942728,"risk":51624.59516670695,"riskEst":false},{"id":33252,"package":"Content Package","advertiser":"Parallelle","order":64552,"am":"Charesse Silvera","team":"Fashion - Lux","start":"Aug 05","end":"Sep 30","daysLeft":27,"goal":5100001.0,"delivered":1962517.0,"deliveredPct":0.38480717944957266,"expected":0.5178571428571429,"gap":-0.13304996340757025,"shortfall":1310313.0,"imprOver":-678554.9464285718,"lines":2,"state":"behind","value":null,"risk":42881.931510154456,"riskEst":true},{"id":33394,"package":"Content Package MNH","advertiser":"Vitamin Shoppe Industries Inc","order":65065,"am":"Sydney Malkin","team":"Mass Retail - Home & Design","start":"Aug 11","end":"Sep 14","daysLeft":11,"goal":34667.0,"delivered":1.0,"deliveredPct":2.8845876481956904e-05,"expected":0.6764705882352942,"gap":-0.6764417423588122,"shortfall":34665.52173913043,"imprOver":-23450.205882352944,"lines":3,"state":"notlive","value":39999.61539201169,"risk":39997.90973919398,"riskEst":false},{"id":30830,"package":"Added Value ROS","advertiser":"Organic Valley Family of Farms","order":43613,"am":"Audrey McGrory","team":"Beauty - CPG - Food","start":"Feb 04","end":"Sep 30","daysLeft":27,"goal":153560.0,"delivered":100793.0,"deliveredPct":0.6563753581661891,"expected":0.8865546218487395,"gap":-0.23017926368255037,"shortfall":39869.31753554502,"imprOver":-35346.32773109243,"lines":1,"state":"behind","value":150000.0,"risk":38945.02233870639,"riskEst":false},{"id":32267,"package":"TOC Evolution of Elegance Sponsorship","advertiser":"Tiffany & Company","order":62783,"am":"Ryan Zakin","team":"Fashion - Lux","start":"Aug 20","end":"Sep 17","daysLeft":14,"goal":6000002.0,"delivered":2005070.0,"deliveredPct":0.3341782219405927,"expected":0.5,"gap":-0.1658217780594073,"shortfall":1989862.0,"imprOver":-994931.0,"lines":3,"state":"behind","value":115824.37216551312,"risk":38412.40667019982,"riskEst":false},{"id":33056,"package":"Runner's World Editorial Content","advertiser":"Recreational Equipment Inc-REI","order":64060,"am":"Kerry Travers","team":"TTCE","start":"Aug 03","end":"Sep 30","daysLeft":27,"goal":1428573.0,"delivered":6938.0,"deliveredPct":0.0048565946577458765,"expected":0.5344827586206896,"gap":-0.5296261639629437,"shortfall":1415592.2258064516,"imprOver":-756609.6379310344,"lines":3,"state":"notlive","value":33683.16291018974,"risk":33377.099774556016,"riskEst":false},{"id":33443,"package":"Dark Social  via Instagram","advertiser":"Christian Dior Perfumes LLC","order":65305,"am":"Ryan Zakin","team":"Fashion - Lux","start":"Aug 14","end":"Sep 12","daysLeft":9,"goal":8114286.0,"delivered":3682331.0,"deliveredPct":0.4538083819081556,"expected":0.6896551724137931,"gap":-0.23584679050563756,"shortfall":2774906.05,"imprOver":-1913728.3103448283,"lines":1,"state":"behind","value":84148.75540743649,"risk":28777.01013743732,"riskEst":false},{"id":33265,"package":"Organic package 1","advertiser":"Land O'Lakes","order":64703,"am":"Audrey McGrory","team":"Beauty - CPG - Food","start":"Aug 17","end":"Sep 30","daysLeft":27,"goal":4075001.0,"delivered":977662.0,"deliveredPct":0.2399169963393874,"expected":0.38636363636363635,"gap":-0.14644664002424895,"shortfall":1544581.7058823528,"imprOver":-596770.2045454546,"lines":2,"state":"behind","value":59790.49269774857,"risk":22662.890440182673,"riskEst":false},{"id":33396,"package":"Content Package WMH","advertiser":"Vitamin Shoppe Industries Inc","order":65065,"am":"Sydney Malkin","team":"Mass Retail - Home & Design","start":"Aug 11","end":"Sep 14","daysLeft":11,"goal":17334.0,"delivered":1.0,"deliveredPct":5.7690088842736815e-05,"expected":0.6764705882352942,"gap":-0.6764128981464514,"shortfall":17332.521739130436,"imprOver":-11724.94117647059,"lines":2,"state":"notlive","value":20000.384607988308,"risk":19998.678955170595,"riskEst":false},{"id":30813,"package":"Video Package","advertiser":"NYU Langone Health","order":42160,"am":"Sophie Doukas","team":"TTCE","start":"Mar 19","end":"Jan 31","daysLeft":150,"goal":666666.0,"delivered":161643.0,"deliveredPct":0.24246474246474248,"expected":0.5283018867924528,"gap":-0.28583714432771035,"shortfall":360698.89285714284,"imprOver":-190557.90566037735,"lines":6,"state":"behind","value":23685.821459152874,"risk":12815.187180279778,"riskEst":false},{"id":33640,"package":"Men's Health Longevity Vitals Content Pa","advertiser":"Pfizer Incorporated","order":65664,"am":"Elena Baquerizo","team":"Pharma - Spirits","start":"Aug 03","end":"Nov 15","daysLeft":73,"goal":126668.0,"delivered":1.0,"deliveredPct":7.894653740486942e-06,"expected":0.2980769230769231,"gap":-0.29806902842318256,"shortfall":126664.64516129032,"imprOver":-37755.807692307695,"lines":2,"state":"notlive","value":12572.456288014737,"risk":12572.123302864338,"riskEst":false},{"id":33639,"package":"Woman's Health Longevity Vitals Content ","advertiser":"Pfizer Incorporated","order":65664,"am":"Elena Baquerizo","team":"Pharma - Spirits","start":"Aug 03","end":"Nov 15","daysLeft":73,"goal":120734.0,"delivered":1.0,"deliveredPct":8.282670995742708e-06,"expected":0.2980769230769231,"gap":-0.29806864040592734,"shortfall":120730.64516129032,"imprOver":-35987.01923076923,"lines":2,"state":"notlive","value":11983.475996125077,"risk":11983.143010974678,"riskEst":false},{"id":33433,"package":"Co-branded Content Package","advertiser":"The Home Depot Incorporated","order":65310,"am":"Sydney Malkin","team":"Mass Retail - Home & Design","start":"Aug 27","end":"Oct 31","daysLeft":58,"goal":120001.0,"delivered":1.0,"deliveredPct":8.333263889467588e-06,"expected":0.1076923076923077,"gap":-0.10768397442841823,"shortfall":119991.71428571429,"imprOver":-12922.184615384616,"lines":2,"state":"notlive","value":9600.881865653419,"risk":9600.138946461951,"riskEst":false},{"id":32063,"package":"Super Hero","advertiser":"Virtuoso Limited","order":62501,"am":"Daniel Trapani","team":"TTCE","start":"Apr 10","end":"Oct 15","daysLeft":42,"goal":2960332.0,"delivered":1485356.0,"deliveredPct":0.501753181737724,"expected":0.776595744680851,"gap":-0.27484256294312703,"shortfall":1047681.8082191781,"imprOver":-813625.2340425532,"lines":1,"state":"behind","value":23809.520745579084,"risk":8426.352769743506,"riskEst":false},{"id":30763,"package":"Content Package","advertiser":"Xiaflex","order":43504,"am":"Anne Distefano","team":"Pharma - Spirits","start":"Jun 15","end":"Oct 31","daysLeft":58,"goal":347616.0,"delivered":99354.0,"deliveredPct":0.28581538249102456,"expected":0.5797101449275363,"gap":-0.2938947624365117,"shortfall":176230.35,"imprOver":-102162.52173913043,"lines":4,"state":"behind","value":12097.396855753186,"risk":6132.998716912581,"riskEst":false},{"id":33003,"package":"House Beautiful Content Package","advertiser":"Lowe's Companies Incorporated","order":63887,"am":"Sydney Malkin","team":"Mass Retail - Home & Design","start":"Aug 03","end":"Oct 24","daysLeft":51,"goal":22334.0,"delivered":1.0,"deliveredPct":4.477478284230322e-05,"expected":0.3780487804878049,"gap":-0.37800400570496256,"shortfall":22331.354838709678,"imprOver":-8442.341463414634,"lines":2,"state":"notlive","value":4669.844854263371,"risk":4669.291774078886,"riskEst":false},{"id":32860,"package":"Good Housekeeping Content Package","advertiser":"Lowe's Companies Incorporated","order":63887,"am":"Sydney Malkin","team":"Mass Retail - Home & Design","start":"Aug 03","end":"Oct 24","daysLeft":51,"goal":22334.0,"delivered":1.0,"deliveredPct":4.477478284230322e-05,"expected":0.3780487804878049,"gap":-0.37800400570496256,"shortfall":22331.354838709678,"imprOver":-8442.341463414634,"lines":2,"state":"notlive","value":4669.844854263371,"risk":4669.291774078886,"riskEst":false},{"id":32470,"package":"Content Package","advertiser":"Pfizer Incorporated","order":63350,"am":"Elena Baquerizo","team":"Pharma - Spirits","start":"Aug 05","end":"Oct 05","daysLeft":32,"goal":60001.0,"delivered":1.0,"deliveredPct":1.666638889351844e-05,"expected":0.47540983606557374,"gap":-0.4753931696766802,"shortfall":59998.89655172414,"imprOver":-28524.06557377049,"lines":4,"state":"notlive","value":3926.722471734614,"risk":3926.584813068709,"riskEst":false},{"id":32187,"package":"Content Package Harper's Bazaar #1","advertiser":"Celebrity Cruises","order":62738,"am":"Kerry Travers","team":"TTCE","start":"Aug 11","end":"Sep 30","daysLeft":27,"goal":210632.0,"delivered":48665.0,"deliveredPct":0.23104276653120134,"expected":0.46,"gap":-0.22895723346879868,"shortfall":104838.52173913043,"imprOver":-48225.72,"lines":4,"state":"behind","value":null,"risk":3430.9957306713964,"riskEst":true},{"id":32830,"package":"Content Package","advertiser":"Monster Energy Company","order":63866,"am":"Ericia Byer","team":"Beauty - CPG - Food","start":"Jul 06","end":"Sep 30","daysLeft":27,"goal":100000.0,"delivered":1.0,"deliveredPct":1e-05,"expected":0.686046511627907,"gap":-0.686036511627907,"shortfall":99998.54237288136,"imprOver":-68603.6511627907,"lines":4,"state":"notlive","value":3380.499565718489,"risk":3380.4502906400735,"riskEst":false},{"id":31339,"package":"Content Package","advertiser":"Ophthalmology","order":44662,"am":"Ericia Byer","team":"Pharma - Spirits","start":"Jul 20","end":"Sep 30","daysLeft":27,"goal":64446.0,"delivered":1.0,"deliveredPct":1.551686683424883e-05,"expected":0.625,"gap":-0.6249844831331658,"shortfall":64444.4,"imprOver":-40277.75,"lines":6,"state":"notlive","value":null,"risk":2109.0383343620933,"riskEst":true},{"id":33422,"package":"Content Package Cos","advertiser":"CVS Health","order":65163,"am":"Kayla Casas","team":"Mass Retail - Home & Design","start":"Aug 17","end":"Sep 04","daysLeft":1,"goal":54667.0,"delivered":1.0,"deliveredPct":1.8292571386759837e-05,"expected":0.9444444444444444,"gap":-0.9444261518730577,"shortfall":54665.94117647059,"imprOver":-51628.944444444445,"lines":3,"state":"notlive","value":1962.4659143288336,"risk":1962.4279041017176,"riskEst":false},{"id":32191,"package":"Content Package Town & Country","advertiser":"Celebrity Cruises","order":62738,"am":"Kerry Travers","team":"TTCE","start":"Aug 11","end":"Sep 30","daysLeft":27,"goal":221373.0,"delivered":76262.0,"deliveredPct":0.3444954895131746,"expected":0.46,"gap":-0.11550451048682542,"shortfall":55586.043478260865,"imprOver":-25569.58,"lines":4,"state":"behind","value":null,"risk":1819.1355114047176,"riskEst":true},{"id":33109,"package":"Branded Content Package","advertiser":"Insmed Incorporated","order":64230,"am":"Samantha Mavleos","team":"Pharma - Spirits","start":"Aug 25","end":"Oct 05","daysLeft":32,"goal":46669.0,"delivered":1.0,"deliveredPct":2.142750005356875e-05,"expected":0.21951219512195122,"gap":-0.21949076762189765,"shortfall":46664.444444444445,"imprOver":-10243.414634146342,"lines":5,"state":"notlive","value":null,"risk":1527.162983673423,"riskEst":true},{"id":29882,"package":"Content Package Town & Country","advertiser":"Golden Isles CVB","order":41409,"am":"Kerry Travers","team":"TTCE","start":"Aug 17","end":"Sep 27","daysLeft":24,"goal":211169.0,"delivered":61773.0,"deliveredPct":0.29252873291060716,"expected":0.4146341463414634,"gap":-0.12210541343085624,"shortfall":62187.0588235294,"imprOver":-25784.87804878049,"lines":4,"state":"behind","value":4289.868093600298,"risk":1263.3212236734732,"riskEst":false},{"id":32158,"package":"Content Package","advertiser":"Tezspire","order":62705,"am":"Samantha Mavleos","team":"Pharma - Spirits","start":"Aug 19","end":"Oct 08","daysLeft":35,"goal":36001.0,"delivered":1.0,"deliveredPct":2.777700619427238e-05,"expected":0.3,"gap":-0.2999722229938057,"shortfall":35997.666666666664,"imprOver":-10799.3,"lines":4,"state":"notlive","value":null,"risk":1178.0768995845801,"riskEst":true},{"id":32097,"package":"Cosmo Content Pkg","advertiser":"Orforglipron","order":62326,"am":"Elena Baquerizo","team":"Pharma - Spirits","start":"Jul 01","end":"Sep 30","daysLeft":27,"goal":37334.0,"delivered":1.0,"deliveredPct":2.6785235977928965e-05,"expected":0.7032967032967034,"gap":-0.7032699180607255,"shortfall":37332.578125,"imprOver":-26255.879120879123,"lines":2,"state":"notlive","value":1103.6062001210526,"risk":1103.5641689948459,"riskEst":false},{"id":33756,"package":"Good Housekeeping Co-Branded Content Pac","advertiser":"ASUSTek Computer Incorporated","order":63443,"am":"Tess Temmins","team":"TTCE","start":"Aug 05","end":"Sep 06","daysLeft":3,"goal":31001.0,"delivered":1.0,"deliveredPct":3.225702396696881e-05,"expected":0.90625,"gap":-0.9062177429760331,"shortfall":30999.896551724138,"imprOver":-28093.65625,"lines":3,"state":"notlive","value":null,"risk":1014.5174784596563,"riskEst":true},{"id":32515,"package":"Esquire Co-Branded Content Package","advertiser":"ASUSTek Computer Incorporated","order":63443,"am":"Tess Temmins","team":"TTCE","start":"Aug 12","end":"Sep 12","daysLeft":9,"goal":31001.0,"delivered":1.0,"deliveredPct":3.225702396696881e-05,"expected":0.7096774193548387,"gap":-0.7096451623308718,"shortfall":30999.590909090908,"imprOver":-21999.709677419356,"lines":3,"state":"notlive","value":null,"risk":1014.507475852291,"riskEst":true}],"overlist":[{"id":33379,"package":"100% SOS Super Hero","advertiser":"Bulgari Corporation of America","order":65027,"am":"Ryan Zakin","team":"Fashion - Lux","start":"Aug 18","end":"Oct 31","daysLeft":58,"goal":11829653.0,"delivered":4798499.0,"deliveredPct":0.40563311535849783,"expected":0.21621621621621623,"gap":0.1894168991422816,"shortfall":0.0,"imprOver":2240736.189189189,"lines":2,"state":"ahead","value":426775.0502656906,"risk":0.0,"riskEst":false},{"id":30589,"package":"Dark Social","advertiser":"Ipsen Pharmaceuticals Inc","order":43062,"am":"Samantha Mavleos","team":"Pharma - Spirits","start":"May 06","end":"Oct 31","daysLeft":58,"goal":8000000.0,"delivered":7347270.0,"deliveredPct":0.91840875,"expected":0.6741573033707865,"gap":0.2442514466292135,"shortfall":0.0,"imprOver":1954011.5730337081,"lines":1,"state":"ahead","value":153608.39562047104,"risk":0.0,"riskEst":false},{"id":33482,"package":"Co-Branded Content Package","advertiser":"Ecco USA Incorporated","order":65452,"am":"Charesse Silvera","team":"Fashion - Lux","start":"Aug 12","end":"Sep 30","daysLeft":27,"goal":4600001.0,"delivered":4016996.0,"deliveredPct":0.8732598101609108,"expected":0.4489795918367347,"gap":0.4242802183241761,"shortfall":0.0,"imprOver":1951689.4285714286,"lines":2,"state":"ahead","value":null,"risk":0.0,"riskEst":true},{"id":28333,"package":"HIV Content Series","advertiser":"Lenacapavir","order":38580,"am":"Ericia Byer","team":"Pharma - Spirits","start":"Jan 15","end":"Dec 31","daysLeft":119,"goal":7230615.0,"delivered":6614751.0,"deliveredPct":0.9148255023950245,"expected":0.66,"gap":0.25482550239502444,"shortfall":0.0,"imprOver":1842545.0999999996,"lines":13,"state":"ahead","value":159064.4450024108,"risk":0.0,"riskEst":false},{"id":33380,"package":"100% SOS ROS","advertiser":"Bulgari Corporation of America","order":65027,"am":"Ryan Zakin","team":"Fashion - Lux","start":"Aug 18","end":"Oct 31","daysLeft":58,"goal":9178082.0,"delivered":3739948.0,"deliveredPct":0.4074868801564423,"expected":0.21621621621621623,"gap":0.19127066394022607,"shortfall":0.0,"imprOver":1755497.8378378376,"lines":2,"state":"ahead","value":331115.07217435964,"risk":0.0,"riskEst":false},{"id":33508,"package":"ELLE & Cosmopolitan Astrology Editorial ","advertiser":"Pandora Jewelry LLC","order":62066,"am":"Katie Lavitt","team":"Fashion - Lux","start":"Aug 27","end":"Sep 30","daysLeft":27,"goal":7142858.0,"delivered":3044529.0,"deliveredPct":0.4262340088519189,"expected":0.20588235294117646,"gap":0.22035165591074246,"shortfall":0.0,"imprOver":1573940.5882352942,"lines":4,"state":"ahead","value":297674.89737659146,"risk":0.0,"riskEst":false},{"id":30810,"package":"MH- Content Package#1","advertiser":"NYU Langone Health","order":42160,"am":"Sophie Doukas","team":"TTCE","start":"Jul 06","end":"Jan 31","daysLeft":150,"goal":2100001.0,"delivered":2100001.0,"deliveredPct":1.0,"expected":0.2822966507177033,"gap":0.7177033492822966,"shortfall":0.0,"imprOver":1507177.7511961723,"lines":1,"state":"ahead","value":74610.44773551148,"risk":0.0,"riskEst":false},{"id":33480,"package":"Dark Social via Meta","advertiser":"Ecco USA Incorporated","order":65452,"am":"Charesse Silvera","team":"Fashion - Lux","start":"Aug 18","end":"Sep 30","daysLeft":27,"goal":1590909.0,"delivered":1590909.0,"deliveredPct":1.0,"expected":0.37209302325581395,"gap":0.627906976744186,"shortfall":0.0,"imprOver":998942.8604651163,"lines":1,"state":"ahead","value":null,"risk":0.0,"riskEst":true},{"id":33444,"package":"Dark Social  via TikTok","advertiser":"Christian Dior Perfumes LLC","order":65305,"am":"Ryan Zakin","team":"Fashion - Lux","start":"Aug 14","end":"Sep 12","daysLeft":9,"goal":7100000.0,"delivered":5773790.0,"deliveredPct":0.8132098591549296,"expected":0.6896551724137931,"gap":0.12355468674113645,"shortfall":0.0,"imprOver":877238.2758620689,"lines":1,"state":"ahead","value":73630.15838889572,"risk":0.0,"riskEst":false},{"id":33683,"package":"Social Ignition","advertiser":"Chanel Incorporated","order":65931,"am":"Nikki Lakin","team":"Fashion - Lux","start":"Aug 20","end":"Sep 09","daysLeft":6,"goal":4166667.0,"delivered":3549374.0,"deliveredPct":0.8518496918520246,"expected":0.7,"gap":0.15184969185202468,"shortfall":0.0,"imprOver":632707.1000000001,"lines":1,"state":"ahead","value":136029.913955101,"risk":0.0,"riskEst":false},{"id":33347,"package":"Superhero","advertiser":"Pasta Sauce","order":64838,"am":"Elena Baquerizo","team":"Beauty - CPG - Food","start":"Jul 30","end":"Sep 30","daysLeft":27,"goal":4969193.0,"delivered":3388527.0,"deliveredPct":0.6819069011809362,"expected":0.5645161290322581,"gap":0.1173907721486781,"shortfall":0.0,"imprOver":583337.4032258061,"lines":1,"state":"ahead","value":63483.35980393359,"risk":0.0,"riskEst":false},{"id":28169,"package":"Added Value","advertiser":"Lenacapavir","order":38580,"am":"Ericia Byer","team":"Pharma - Spirits","start":"Jul 28","end":"Dec 31","daysLeft":119,"goal":4727995.0,"delivered":4219519.0,"deliveredPct":0.8924542009879453,"expected":0.7715930902111324,"gap":0.12086111077681283,"shortfall":0.0,"imprOver":571430.7274472169,"lines":1,"state":"ahead","value":104009.94945093512,"risk":0.0,"riskEst":false},{"id":33055,"package":"Shoes & Gear Editorial Content","advertiser":"Recreational Equipment Inc-REI","order":64060,"am":"Kerry Travers","team":"TTCE","start":"Jul 31","end":"Sep 30","daysLeft":27,"goal":1428572.0,"delivered":1335727.0,"deliveredPct":0.9350085259965896,"expected":0.5573770491803278,"gap":0.37763147681626175,"shortfall":0.0,"imprOver":539473.7540983608,"lines":2,"state":"ahead","value":33683.139332001636,"risk":0.0,"riskEst":false},{"id":32274,"package":"Great American Picnic Tour: Official, S'","advertiser":"Hershey Chocolate","order":62667,"am":"Elena Baquerizo","team":"Beauty - CPG - Food","start":"Jun 16","end":"Sep 22","daysLeft":19,"goal":2500000.0,"delivered":2500000.0,"deliveredPct":1.0,"expected":0.8061224489795918,"gap":0.19387755102040816,"shortfall":0.0,"imprOver":484693.87755102036,"lines":1,"state":"ahead","value":243675.97489396684,"risk":0.0,"riskEst":false}],"teams":[{"team":"Fashion - Lux","packages":79,"ams":8,"behind":7,"ahead":12,"notlive":1,"onplan":59,"shortfall":49860492.125436,"goal":192132161.0,"risk":1522319.258478949,"value":5673799.803082192,"valueCoverage":66},{"team":"TTCE","packages":108,"ams":10,"behind":9,"ahead":7,"notlive":9,"onplan":83,"shortfall":40534551.110405385,"goal":231887891.0,"risk":1141179.7802587794,"value":6163846.0,"valueCoverage":61},{"team":"Mass Retail - Home & Design","packages":67,"ams":7,"behind":1,"ahead":5,"notlive":11,"onplan":50,"shortfall":5595426.497618457,"goal":158825241.0,"risk":447806.5970382887,"value":5702175.0,"valueCoverage":88},{"team":"Beauty - CPG - Food","packages":57,"ams":9,"behind":2,"ahead":8,"notlive":3,"onplan":44,"shortfall":7682359.615149044,"goal":144069329.0,"risk":214344.4721057996,"value":4942834.022171556,"valueCoverage":96},{"team":"Pharma - Spirits","packages":66,"ams":5,"behind":5,"ahead":7,"notlive":7,"onplan":47,"shortfall":13597939.428192968,"goal":339624304.0,"risk":140305.7240949011,"value":5925332.000000001,"valueCoverage":67},{"team":"Unassigned","packages":11,"ams":2,"behind":0,"ahead":0,"notlive":1,"onplan":10,"shortfall":619128.1362991848,"goal":8080633.0,"risk":1750.2126868199507,"value":135000.0,"valueCoverage":64}],"amRows":[{"am":"Ryan Zakin","team":"Fashion - Lux","packages":23,"behind":4,"notlive":1,"shortfall":22269981.847658228,"median_gap":-0.016978772160200134,"risk":748329.4403558793},{"am":"Sophie Doukas","team":"TTCE","packages":21,"behind":3,"notlive":3,"shortfall":14636882.8328321,"median_gap":0.0005079388968319831,"risk":518098.99642624834},{"am":"Katie Lavitt","team":"Fashion - Lux","packages":15,"behind":2,"notlive":0,"shortfall":6175616.617604617,"median_gap":-0.007753093485805551,"risk":485236.58201844024},{"am":"Sydney Malkin","team":"Mass Retail - Home & Design","packages":13,"behind":0,"notlive":7,"shortfall":372300.86594699824,"median_gap":-0.10768397442841823,"risk":239215.4091487126},{"am":"Francesca Caccavale","team":"Mass Retail - Home & Design","packages":14,"behind":1,"notlive":1,"shortfall":2330666.2400379507,"median_gap":0.0003770240483879292,"risk":136600.69220961223},{"am":"Audrey McGrory","team":"Beauty - CPG - Food","packages":14,"behind":2,"notlive":1,"shortfall":6401604.132309007,"median_gap":-0.013029655634597624,"risk":135006.03018845932},{"am":"Julianna Ventricelli","team":"Fashion - Lux","packages":5,"behind":0,"notlive":0,"shortfall":9872843.666666668,"median_gap":1.712035610340695e-05,"risk":106598.81264173568},{"am":"Charesse Silvera","team":"Fashion - Lux","packages":13,"behind":1,"notlive":0,"shortfall":2152967.8571428563,"median_gap":0.03557922077922071,"risk":105661.23937587845},{"am":"Ericia Byer","team":"Pharma - Spirits","packages":23,"behind":1,"notlive":2,"shortfall":3632059.5713886325,"median_gap":0.030056745532509588,"risk":79685.75109724101},{"am":"Russell Tom Sun","team":"Fashion - Lux","packages":6,"behind":0,"notlive":0,"shortfall":5408118.5,"median_gap":-0.006988209346280562,"risk":72922.70315946093},{"am":"Elena Baquerizo","team":"Pharma - Spirits","packages":36,"behind":3,"notlive":4,"shortfall":9350082.499928085,"median_gap":-0.0042038172022866305,"risk":66485.37062467511},{"am":"Lexie Kilpatrick","team":"TTCE","packages":12,"behind":1,"notlive":0,"shortfall":1890684.5243534478,"median_gap":-0.0028299174000321337,"risk":60077.89142376961},{"am":"Kasey Lakin","team":"Beauty - CPG - Food","packages":9,"behind":0,"notlive":0,"shortfall":709757.191129032,"median_gap":-0.008925469302079811,"risk":52233.59043368051},{"am":"Lily Jay","team":"TTCE","packages":8,"behind":0,"notlive":0,"shortfall":2741477.022580644,"median_gap":0.01000275003390498,"risk":51173.25235946081}],"families":[{"family":"High impact","lines":150,"impressions":144254535.0,"lo":0.0013833662303683063,"hi":0.0029262130499722438,"median":0.0018958526608422,"below":38,"within":74,"above":38,"attention":35.392855276984506},{"family":"Display / standard","lines":55,"impressions":78162328.0,"lo":0.000693127706193902,"hi":0.0011118837448400396,"median":0.0008720366255382726,"below":14,"within":27,"above":14,"attention":32.113379748287215},{"family":"Branded content","lines":99,"impressions":29779948.0,"lo":0.0012536289796190275,"hi":0.004804826123202655,"median":0.0024079320113314447,"below":25,"within":49,"above":25,"attention":22.2326034270266},{"family":"Added value","lines":85,"impressions":24040320.0,"lo":0.000770360197308829,"hi":0.0010931259196972883,"median":0.00088165910769744,"below":21,"within":43,"above":21,"attention":32.258617822352356},{"family":"Unclassified","lines":20,"impressions":18591999.0,"lo":0.000589266302337224,"hi":0.0027997982647890735,"median":0.0016716229049399812,"below":5,"within":10,"above":5,"attention":36.84285121874264},{"family":"Video / pre-roll","lines":30,"impressions":5054835.0,"lo":0.0011241953037362858,"hi":0.002033864074926857,"median":0.0016381216759297468,"below":8,"within":14,"above":8,"attention":null}],"topCreative":[{"ad":"HDM | Woman's Health Longevity Vitals Content Package includes 15x Sponsored E","advertiser":"Pfizer Incorporated","family":"Branded content","am":"Elena Baquerizo","impressions":2850657.0,"ctr":0.04015811091969325,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":["Women's Health","Seventeen"]},{"ad":"HDM | Content Package includes 1x Non-Custom Shot Co-Branded Article Summer St","advertiser":"The Home Depot Incorporated","family":"Branded content","am":"Sydney Malkin","impressions":824657.0,"ctr":0.036654027068223516,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":["Popular Mechanics"]},{"ad":"HDM | Content Package includes: 3x Sponsored Existing Articles on Good Houseke","advertiser":"LEGO Systems","family":"Branded content","am":"Samantha Mavleos","impressions":1222893.0,"ctr":0.02763201686492604,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":["Good Housekeeping"]},{"ad":"HDM | Men's Health Longevity Vitals Content Package includes  15x Sponsored  E","advertiser":"Pfizer Incorporated","family":"Branded content","am":"Elena Baquerizo","impressions":2850958.0,"ctr":0.025621562997420515,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":["Men's Health","Seventeen"]},{"ad":"HDM | Co-branded Content Package (Content Creation) 3x Anchor Co-Branded Artic","advertiser":"The Home Depot Incorporated","family":"Branded content","am":"Sydney Malkin","impressions":473163.0,"ctr":0.024418646428397826,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":["House Beautiful","Popular Mechanics","Good Housekeeping"]},{"ad":"HDM | Co-Branded Content Package includes 1x Shoppble Listicle with Supplied A","advertiser":"Tommy Hilfiger","family":"Branded content","am":"Harrison Dircks","impressions":50081.0,"ctr":0.022024320600626986,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":["Elle"]}],"bottomCreative":[{"ad":"HDM | Cross Platform | LLM Cobranded Content Sponsorship | Roadblock (US) - Ro","advertiser":"The Home Depot Incorporated","family":"Branded content","am":"Sydney Malkin","impressions":34830.0,"ctr":0.0,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":[]},{"ad":"HDM |Content Package includes 1x Non-Custom Shot Co-Branded Article Summer Bat","advertiser":"The Home Depot Incorporated","family":"Branded content","am":"Sydney Malkin","impressions":38807.0,"ctr":0.0,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":[]},{"ad":"HDM |Content Package includes 1x Non-Custom Shot Co-Branded Article Summer Sto","advertiser":"The Home Depot Incorporated","family":"Branded content","am":"Sydney Malkin","impressions":122404.0,"ctr":0.0,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":[]},{"ad":"HDM | Cross Platform Super Hero: Full Frame Image or Video (2x Creative Build)","advertiser":"Grohe America Incorporated","family":"High impact","am":"Nick Chua","impressions":785584.0,"ctr":9.292449948064115e-05,"lo":0.0013833662303683063,"hi":0.0029262130499722438,"brands":[]},{"ad":"HDM | Apple News Cosmopolitan Sponsorship","advertiser":"The Cosmopolitan Resort Casino","family":"Unclassified","am":"Regina Diaz","impressions":29519.0,"ctr":0.0001016294589925133,"lo":0.000589266302337224,"hi":0.0027997982647890735,"brands":[]},{"ad":"HDM | Cross Platform | Cobranded Content Sponsorship | Roadblock (US) - Roadbl","advertiser":"Monster Energy Company","family":"Branded content","am":"Ericia Byer","impressions":53678.0,"ctr":0.0001490368493610045,"lo":0.0012536289796190275,"hi":0.004804826123202655,"brands":[]}],"compare":{"adservedMedian":0.0014034342862534201,"nonadservedMedian":0.015116850282819314,"adservedLines":443,"nonadservedLines":162},"coverage":[{"field":"AP Package Impression Goals","pct":100.0},{"field":"AP Package Billable Pacing Rate","pct":100.0},{"field":"First Party Impressions","pct":100.0},{"field":"First Party CTR","pct":100.0},{"field":"Onsite Ad Engagement Rate","pct":100.0},{"field":"Social_Total Engagements/Actions Rate","pct":100.0},{"field":"Account Management Team","pct":97.9},{"field":"Attention Unit Score","pct":60.6},{"field":"Third Party Impressions","pct":32.9},{"field":"Third Party CTR","pct":32.5},{"field":"Video_Completion Rate","pct":30.6},{"field":"Google Analytics Pageviews","pct":8.3}],"phTabs":[{"tab":"End Date Discrepancies","rows":11},{"tab":"Third Party Reports Needed","rows":0},{"tab":"Delayed Launches - Paid Social","rows":6},{"tab":"Delayed Launches - Onsite","rows":1},{"tab":"Overall Pacing","rows":113},{"tab":"Package Pacing Below 100","rows":2},{"tab":"Lines Pacing Below 100 - Direct","rows":12},{"tab":"Lines Pacing Above 120 - Direct","rows":12},{"tab":"Lines Pacing Below 100 - Social","rows":24},{"tab":"Lines Pacing Above 120 - Social","rows":3},{"tab":"Orders Starting Next 7 Days","rows":2},{"tab":"Lines Starting This Week Onsite","rows":33},{"tab":"Lines Starting This Week Spon","rows":6},{"tab":"Lines Starting This Week Social","rows":4},{"tab":"Performance","rows":294}],"placeholderShare":14.0,"nonadservedShare":26,"overNoise":{"withPlaceholder":25,"withoutPlaceholder":15},"thresholds":{"goalFloor":1000,"launchGrace":5,"launchFraction":0.05,"gapBand":0.1}}</script>
+<script>
+const D = JSON.parse(document.getElementById('payload').textContent);
+D.alerts.forEach(a=>{ if(a.rule) a.rule=a.rule.replace(/vertical owner/gi,'Pod owner'); });
+
+/* ---------- formatting ---------- */
+const nf = n => n===null||n===undefined||isNaN(n) ? '—' : Math.round(n).toLocaleString('en-US');
+function compact(n){
+  if(n===null||n===undefined||isNaN(n)) return '—';
+  const a=Math.abs(n);
+  if(a>=1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'')+'B';
+  if(a>=1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';
+  if(a>=1e3) return (n/1e3).toFixed(0)+'K';
+  return String(Math.round(n));
+}
+const money = n => n===null||n===undefined||isNaN(n) ? '—' : '$'+compact(n);
+const riskTxt = r => (r.risk===null||r.risk===undefined) ? '—'
+  : (r.riskEst
+      ? `<span title="Estimated at the portfolio CPM — this order carries no booked value in its name">~${money(r.risk)}</span>`
+      : money(r.risk));
+const pct  = (n,d=0) => n===null||n===undefined||isNaN(n) ? '—' : (n*100).toFixed(d)+'%';
+const signed = n => {
+  if(n===null||n===undefined||isNaN(n)) return '—';
+  const p = Math.round(n*100);
+  return (p>0?'+':'') + p + ' pts';
+};
+const ctrTxt = n => n===null||n===undefined||isNaN(n) ? '—' : (n*100).toFixed(2)+'%';
+const esc = s => String(s===null||s===undefined?'':s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+const STATE_LABEL = {behind:'Behind', ahead:'Over', onplan:'On plan',
+                     notlive:'Not delivering', upcoming:'Upcoming', ended:'Ended'};
+
+function stat(k,v,n,cls){
+  return `<div class="card stat"><div class="k">${esc(k)}</div>
+    <div class="v ${cls||''}">${v}</div><div class="n">${esc(n||'')}</div></div>`;
+}
+
+/* ---------- rail footer ---------- */
+document.getElementById('railfoot').innerHTML =
+  D.sources.map(s=>`<div style="margin-bottom:10px">${esc(s.name)}<br>
+    <span style="color:var(--faint)">${esc(s.asOf)} · ${nf(s.rows)} rows</span></div>`).join('') +
+  `<div style="color:var(--faint)">Prototype on live extracts. Every number on screen is computed
+   from the two files, not sample data.</div>`;
+
+/* ================= TODAY ================= */
+function renderToday(){
+  const t = D.totals;
+  const bars = D.strip.map(p=>{
+    const h = Math.min(Math.abs(p.gap)/0.5,1)*100;
+    const cls = p.state;
+    return `<div class="col"><div class="up">${p.gap>0?`<div class="bar ${cls}" style="height:${h}%"></div>`:''}</div>
+      <div class="dn">${p.gap<=0?`<div class="bar ${cls}" style="height:${h}%"></div>`:''}</div></div>`;
+  }).join('');
+
+  const groups = ['Launch','Pacing','Data quality','Commercial'];
+  const ledger = groups.map(g=>{
+    const items = D.alerts.filter(a=>a.group===g);
+    if(!items.length) return '';
+    return `<div class="groupbar"><h3>${esc(g)}</h3><div class="line"></div></div>
+      <div class="ledger">` + items.map(a=>{
+        const clear = a.count===0;
+        return `<div class="alert ${clear?'clear':a.severity}">
+          <div class="cnt">${clear?'clear':nf(a.count)}<small>${clear?'nothing to action':esc(a.unit)}</small></div>
+          <div class="body"><div class="name">${esc(a.label)}</div>
+            <div class="rule">${esc(a.rule)}</div>
+            ${a.fieldGap?`<div class="flag">Field gap: ${esc(a.fieldGap)}</div>`:''}
+          </div></div>`;
+      }).join('') + `</div>`;
+  }).join('');
+
+  const rows = D.worklist.slice(0,14).map(r=>`
+    <tr>
+      <td><div class="tname">${esc(r.advertiser)}</div>
+          <div class="tsub">${esc(r.package)} · order ${r.order}</div></td>
+      <td>${esc(r.am)}<div class="tsub">${esc(r.team)}</div></td>
+      <td>${miniBar(r)}</td>
+      <td class="r">${signed(r.gap)}</td>
+      <td class="r">${compact(r.shortfall)}</td>
+      <td class="r">${riskTxt(r)}</td>
+      <td class="r">${r.daysLeft}d</td>
+      <td><span class="pill ${r.state}">${STATE_LABEL[r.state]}</span></td>
+    </tr>`).join('');
+
+  document.getElementById('view-today').innerHTML = `
+    <h1>Today</h1>
+    <p class="lede">One screen an account manager can open at 9am and know what to touch.
+      Packages are ranked by what the shortfall is worth, not by how far off plan they read.</p>
+    <p class="stamp">Delivery as of <b>${esc(D.asOf)}</b> · ${nf(t.live)} live packages across
+      ${t.teams} Pods and ${t.ams} account managers · pacing compares delivered share of goal
+      with elapsed share of flight</p>
+
+    <div class="grid g4">
+      ${stat('Not delivering', nf(t.notlive), 'live, effectively dark', 'behind')}
+      ${stat('Behind plan', nf(t.behind), `of ${nf(t.live)} live packages`, 'behind')}
+      ${stat('Over-delivering', nf(t.ahead), 'inventory going out unpaid', 'ahead')}
+      ${stat('Value at risk', money(t.risk), `${t.valueCoverage}% of packages priced`)}
+    </div>
+
+    <div class="note" style="margin-top:14px">
+      <b>The book as a whole is on plan, which is exactly why the total cannot be the headline.</b>
+      Delivery across all ${nf(t.live)} live packages sits at ${pct(t.pacingIndex,1)} of where the
+      calendar says it should be. Underneath it, ${t.notlive} packages are dark and ${t.behind}
+      are more than ten points behind, carrying ${money(t.risk)} between them.
+    </div>
+
+    <div class="sec">
+      <header><h2>The shape of the book</h2>
+        <p>Every live package, sorted by how far delivery sits from where the calendar says it
+          should be. The width of the red tail is the workload; a package sitting on the centre
+          line needs nothing.</p></header>
+      <div class="card">
+        <div class="striphead">
+          <div class="legend">
+            <span><i class="dot" style="background:var(--behind)"></i>Behind by more than 10 points</span>
+            <span><i class="dot" style="background:#C7EFE8"></i>Within 10 points</span>
+            <span><i class="dot" style="background:var(--ahead)"></i>Over by more than 10 points</span>
+            <span><i class="dot" style="background:var(--blocked)"></i>Live, no delivery</span>
+          </div>
+        </div>
+        <div class="strip" role="img"
+          aria-label="Distribution of pacing gap across ${nf(t.live)} live packages">${bars}</div>
+        <div class="stripaxis"><span>furthest behind</span><span>on plan</span><span>furthest over</span></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <header><h2>Checks that ran this morning</h2>
+        <p>The same checks the portfolio health workbook performs today, applied across all five
+          Pods instead of one, with the rule that fired written next to each count.</p></header>
+      ${ledger}
+    </div>
+
+    <div class="sec">
+      <header><h2>Work the list</h2>
+        <p>Ranked by value at risk. The marker on each bar is where delivery should be today.
+          A tilde means the order carries no booked value in its name, so its shortfall is priced
+          at the portfolio rate of $${D.totals.portfolioCpm.toFixed(2)} per thousand.</p></header>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Advertiser and package</th><th>Owner</th><th>Delivered against plan</th>
+          <th class="r">Gap</th><th class="r">Impr. short</th><th class="r">At risk</th>
+          <th class="r">Left</th><th>State</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+    </div>`;
+}
+
+function miniBar(r){
+  const d = Math.min(Math.max(r.deliveredPct||0,0),1.6);
+  const e = Math.min(Math.max(r.expected||0,0),1);
+  return `<div class="mini" title="delivered ${pct(r.deliveredPct,1)} · expected ${pct(r.expected,1)}">
+      <div class="fill ${r.state}" style="width:${(d/1.6*100).toFixed(1)}%"></div>
+      <div class="tick" style="left:${(e/1.6*100).toFixed(1)}%"></div>
+    </div>`;
+}
+
+/* ================= PACING ================= */
+let pacingFilter = 'all';
+function renderPacing(){
+  const teams = ['all', ...D.teams.map(t=>t.team)];
+  const chips = teams.map(t=>
+    `<button data-team="${esc(t)}" aria-pressed="${t===pacingFilter}">${t==='all'?'All Pods':esc(t)}</button>`
+  ).join('');
+
+  const rows = D.worklist
+    .filter(r=>pacingFilter==='all'||r.team===pacingFilter)
+    .map(r=>`
+    <tr>
+      <td><div class="tname">${esc(r.advertiser)}</div>
+          <div class="tsub">${esc(r.package)} · ${r.lines} line${r.lines===1?'':'s'}</div></td>
+      <td>${esc(r.am)}</td>
+      <td class="tsub">${esc(r.start)} – ${esc(r.end)}</td>
+      <td>${miniBar(r)}</td>
+      <td class="r">${pct(r.deliveredPct,1)}</td>
+      <td class="r">${pct(r.expected,1)}</td>
+      <td class="r" style="color:var(--behind);font-weight:500">${signed(r.gap)}</td>
+      <td class="r">${compact(r.goal)}</td>
+      <td class="r">${r.daysLeft}d</td>
+      <td><span class="pill ${r.state}">${STATE_LABEL[r.state]}</span></td>
+    </tr>`).join('') || `<tr><td colspan="10" style="color:var(--faint)">No packages behind plan in this Pod.</td></tr>`;
+
+  const over = D.overlist.map(r=>`
+    <tr>
+      <td><div class="tname">${esc(r.advertiser)}</div><div class="tsub">${esc(r.package)}</div></td>
+      <td>${esc(r.am)}<div class="tsub">${esc(r.team)}</div></td>
+      <td>${miniBar(r)}</td>
+      <td class="r">${pct(r.deliveredPct,1)}</td>
+      <td class="r" style="color:var(--ahead);font-weight:500">${signed(r.gap)}</td>
+      <td class="r" style="font-weight:500">${compact(r.imprOver)}</td>
+      <td class="r">${money(r.value)}</td>
+      <td class="r">${r.daysLeft}d</td>
+    </tr>`).join('');
+
+  document.getElementById('view-pacing').innerHTML = `
+    <h1>Pacing</h1>
+    <p class="lede">Package-level planned against delivered, with the line items that roll into it.
+      This is the view the roadmap scopes for GAM; it is built here on the Meta and onsite data
+      already flowing.</p>
+    <p class="stamp">Grain: order → package → ad → line item · ${nf(D.totals.packages)} packages
+      from ${nf(D.totals.orders)} orders · goal source <b>AP Package Impression Goals</b>,
+      delivery source <b>AP Package Total Billable Impressions</b></p>
+
+    <div class="note">
+      <b>Why this replaces the below-100 and above-120 cuts.</b> A quarter of all lines currently
+      trip the over-120 alert, but ${D.placeholderShare}% of lines are booked with an impression
+      goal of 1 — sponsorship and flat-rate placements whose pacing rate is arithmetic noise.
+      Excluding them drops genuine over-pacing from ${D.overNoise.withPlaceholder}% to
+      ${D.overNoise.withoutPlaceholder}% of lines. Comparing delivery against elapsed flight
+      instead of against a raw goal removes the rest of the false positives.
+    </div>
+
+    <div class="sec">
+      <header><h2>Behind plan and not delivering</h2>
+        <p>Packages trailing the calendar by more than ten points, plus flights that are live but
+          effectively dark. Ranked by what the shortfall is worth.</p></header>
+      <div class="filters" id="pacingFilters">${chips}</div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Advertiser and package</th><th>Owner</th><th>Flight</th>
+          <th>Delivered against plan</th><th class="r">Delivered</th><th class="r">Expected</th>
+          <th class="r">Gap</th><th class="r">Goal</th><th class="r">Left</th>
+          <th>State</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+    </div>
+
+    <div class="sec">
+      <header><h2>Over-delivering</h2>
+        <p>Ahead of plan by more than ten points. Every impression above the line is inventory
+          delivered without revenue against it, and a candidate for an upsell conversation
+          rather than a correction. Ranked by impressions already given away rather than by
+          percentage, so small packages do not crowd out real ones.</p></header>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Advertiser and package</th><th>Owner</th><th>Delivered against plan</th>
+          <th class="r">Delivered</th><th class="r">Gap</th><th class="r">Impr. ahead</th>
+          <th class="r">Package value</th><th class="r">Left</th></tr></thead>
+        <tbody>${over}</tbody></table></div>
+    </div>`;
+
+  document.getElementById('pacingFilters').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    pacingFilter = b.dataset.team; renderPacing();
+  });
+}
+
+/* ================= CREATIVE ================= */
+function renderCreative(){
+  const lo0 = Math.min(...D.families.map(f=>f.lo)) * 0.7;
+  const hi0 = Math.max(...D.families.map(f=>f.hi)) * 1.15;
+  const L = Math.log(lo0), R = Math.log(hi0);
+  const fam = D.families.map(f=>{
+    const w = x => (((Math.log(Math.max(x,lo0)) - L) / (R - L)) * 100).toFixed(1);
+    return `<tr>
+      <td class="tname">${esc(f.family)}</td>
+      <td class="r">${nf(f.lines)}</td>
+      <td class="r">${compact(f.impressions)}</td>
+      <td><div class="band" title="range ${ctrTxt(f.lo)} to ${ctrTxt(f.hi)}">
+            <div class="track"></div>
+            <div class="zone" style="left:${w(f.lo)}%; width:${(w(f.hi)-w(f.lo)).toFixed(1)}%"></div>
+            <div class="med" style="left:${w(f.median)}%"></div>
+          </div></td>
+      <td class="r">${ctrTxt(f.lo)}–${ctrTxt(f.hi)}</td>
+      <td class="r">${ctrTxt(f.median)}</td>
+      <td class="r">${f.attention===null?'—':f.attention.toFixed(1)}</td>
+      <td class="r"><span style="color:var(--onplan)">${f.above}</span> /
+        <span style="color:var(--muted)">${f.within}</span> /
+        <span style="color:var(--behind)">${f.below}</span></td>
+    </tr>`;
+  }).join('');
+
+  const creRow = (r,kind) => {
+    const lo=r.lo, hi=r.hi, top=Math.max(hi*1.6, r.ctr*1.1);
+    const w = x => (Math.min(x,top)/top*100).toFixed(1);
+    return `<tr>
+      <td><div class="tname">${esc(r.advertiser)}</div>
+          <div class="tsub">${esc(r.ad)}</div></td>
+      <td>${esc(r.family)}${r.brands.length?`<div class="tsub">${esc(r.brands.join(', '))}</div>`:''}</td>
+      <td class="r">${compact(r.impressions)}</td>
+      <td><div class="band">
+            <div class="track"></div>
+            <div class="zone" style="left:${w(lo)}%; width:${(w(hi)-w(lo)).toFixed(1)}%"></div>
+            <div class="act ${kind}" style="left:${w(r.ctr)}%"></div>
+          </div></td>
+      <td class="r" style="font-weight:500">${ctrTxt(r.ctr)}</td>
+      <td><span class="pill ${kind}">${kind==='above'?'Above range':'Below range'}</span></td>
+      <td>${esc(r.am)}</td>
+    </tr>`;
+  };
+
+  document.getElementById('view-creative').innerHTML = `
+    <h1>Creative</h1>
+    <p class="lede">Ranking creative needs something to rank against. Each format family carries
+      its own click-through range, so a branded content unit is judged against branded content
+      and not against a run-of-site banner.</p>
+    <p class="stamp">Ranges are the middle half of live delivery within each family, on lines with
+      1,000 impressions or more · format family is parsed from <b>AP Ad Name</b> and publisher
+      brand from the <b>Line Item</b> string — neither is a governed field today</p>
+
+    <div class="sec">
+      <header><h2>What each family delivers</h2>
+        <p>The shaded band is the middle half of performance; the marker is the family median.
+          Attention unit score is shown where it is populated. The axis is logarithmic, because
+          content amplification runs an order of magnitude above display.</p></header>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Format family</th><th class="r">Lines</th><th class="r">Impressions</th>
+          <th>Range</th><th class="r">CTR range</th><th class="r">Median</th>
+          <th class="r">Attention</th><th class="r">Above / in / below</th></tr></thead>
+        <tbody>${fam}</tbody></table></div>
+    </div>
+
+    <div class="sec">
+      <header><h2>Why non-ad-served lines are held out</h2>
+        <p>On a non-ad-served or organic-handle placement the impressions and the clicks are
+          counted by different systems, so the ratio between them is not a click-through rate in
+          any comparable sense.</p></header>
+      <div class="grid g2">
+        <div class="card">
+          <div class="cov" style="grid-template-columns:1fr auto auto; gap:10px 18px">
+            <div></div><div class="tsub">Lines</div><div class="tsub">Median CTR</div>
+            <div class="tname">Ad-served</div>
+            <div class="num" style="text-align:right">${nf(D.compare.adservedLines)}</div>
+            <div class="num" style="text-align:right;font-weight:600">${ctrTxt(D.compare.adservedMedian)}</div>
+            <div class="tname">Non-ad-served</div>
+            <div class="num" style="text-align:right">${nf(D.compare.nonadservedLines)}</div>
+            <div class="num" style="text-align:right;font-weight:600;color:var(--behind)">${ctrTxt(D.compare.nonadservedMedian)}</div>
+          </div>
+          <p style="font-size:13px;color:var(--muted);margin:14px 0 0;line-height:1.5">
+            ${D.nonadservedShare}% of lines in the extract are not independently ad-served.
+            Ranked alongside everything else they take every top slot — which is exactly what a
+            naive creative leaderboard would have shown.</p>
+        </div>
+        <div class="card">
+          <h3>How the split is handled</h3>
+          <p style="font-size:13.5px;color:var(--muted);margin:0 0 10px;line-height:1.55">
+            Family ranges and both lists below are computed on ad-served lines only.
+            Non-ad-served placements still get pacing, delivery and engagement reporting — they
+            simply do not enter a click-through comparison.</p>
+          <p style="font-size:13.5px;color:var(--muted);margin:0;line-height:1.55">
+            One consequence is visible above: paid social drops out of the range table entirely,
+            because almost no paid social line is ad-served. Social needs an engagement benchmark,
+            not a click-through one.</p>
+          <p style="font-size:13.5px;color:var(--muted);margin:10px 0 0;line-height:1.55">
+            The durable fix is a delivery-method field on the line, so this becomes a filter
+            rather than a string match on the ad name.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <header><h2>Beating their range</h2>
+        <p>Ad-served creative on 20,000 impressions or more clearing the top of its family band.
+          This is the evidence a renewal conversation runs on.</p></header>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Advertiser and creative</th><th>Family and brand</th><th class="r">Impressions</th>
+          <th>Against range</th><th class="r">CTR</th><th>Verdict</th><th>Owner</th></tr></thead>
+        <tbody>${D.topCreative.map(r=>creRow(r,'above')).join('')}</tbody></table></div>
+    </div>
+
+    <div class="sec">
+      <header><h2>Below their range</h2>
+        <p>Same volume floor, sitting under the bottom of its family band. These are the swap-out
+          candidates while there is still flight left to swap them.</p></header>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Advertiser and creative</th><th>Family and brand</th><th class="r">Impressions</th>
+          <th>Against range</th><th class="r">CTR</th><th>Verdict</th><th>Owner</th></tr></thead>
+        <tbody>${D.bottomCreative.map(r=>creRow(r,'below')).join('')}</tbody></table></div>
+    </div>`;
+}
+
+/* ================= PERFORMANCE ================= */
+let perfSort = 'impact';
+let perfSelectedKey = '';
+
+function renderPerformance(){
+  const rangeStats = D.families.reduce((a,f)=>{
+    a.below += f.below||0; a.within += f.within||0; a.above += f.above||0; return a;
+  }, {below:0, within:0, above:0});
+  const rangeTotal = rangeStats.below + rangeStats.within + rangeStats.above;
+  const withinShare = rangeTotal ? Math.round(rangeStats.within/rangeTotal*100) : 0;
+  const cov = field => (D.coverage.find(c=>c.field===field)||{}).pct||0;
+  const shortAd = r => r.ad.length>58 ? r.ad.slice(0,58)+'…' : r.ad;
+  const keyFor = r => `${r.kind}:${r.advertiser}:${r.ad}`;
+  const metricsFor = r => {
+    const impressions = Number(r.impressions)||0;
+    const clicks = Math.round(impressions * (Number(r.ctr)||0));
+    const boundary = r.kind==='above' ? r.hi : r.lo;
+    const impactClicks = Math.round(impressions * ((Number(r.ctr)||0) - boundary));
+    return {impressions, clicks, impactClicks};
+  };
+  const queue = [
+    ...D.bottomCreative.slice(0,3).map(r=>({...r,kind:'below',status:'Below range',action:'Open creative review'})),
+    ...D.topCreative.slice(0,3).map(r=>({...r,kind:'above',status:'Above range',action:'Use as renewal proof'}))
+  ];
+  const sortLabels = {
+    impact:'Performance impact', impressions:'Impressions', clicks:'Clicks', ctr:'CTR', gap:'Benchmark gap'
+  };
+  const sortedQueue = [...queue].sort((a,b)=>{
+    const am=metricsFor(a), bm=metricsFor(b);
+    if(perfSort==='impressions') return bm.impressions-am.impressions;
+    if(perfSort==='clicks') return bm.clicks-am.clicks;
+    if(perfSort==='ctr') return (b.ctr||0)-(a.ctr||0);
+    if(perfSort==='gap') return Math.abs(b.ctr-(b.kind==='above'?b.hi:b.lo))-Math.abs(a.ctr-(a.kind==='above'?a.hi:a.lo));
+    return Math.abs(bm.impactClicks)-Math.abs(am.impactClicks);
+  });
+  const selected = sortedQueue.find(r=>keyFor(r)===perfSelectedKey) || sortedQueue[0];
+  perfSelectedKey = selected ? keyFor(selected) : '';
+  const proof = D.topCreative[0];
+  const selectedMetrics = metricsFor(selected);
+  const selectedRange = `${ctrTxt(selected.lo)}–${ctrTxt(selected.hi)}`;
+  const selectedImpact = selectedMetrics.impactClicks;
+  const impactText = selectedImpact===0 ? 'At benchmark boundary' :
+    `${selectedImpact>0?'+':''}${compact(selectedImpact)} clicks vs ${selected.kind==='above'?'ceiling':'floor'}`;
+
+  const summaryStat = (k,v,n,cls) => `<div class="card stat">
+    <div class="k">${esc(k)}</div><div class="v ${cls||''}">${v}</div>
+    <div class="n">${esc(n||'')}</div></div>`;
+  const detailMetric = (k,v,n,missing=false) => `<div class="perf-detail-metric">
+    <div class="k">${esc(k)}</div><div class="v ${missing?'missing':''}">${v}</div>
+    <div class="n">${esc(n||'')}</div></div>`;
+  const ownerBlock = r => `<div class="perf-owner">
+    <div class="perf-owner-line"><span class="perf-owner-role am">AM</span>${esc(r.am)}</div>
+    <div class="perf-owner-line"><span class="perf-owner-role cm">CM</span>Campaign Management</div>
+  </div>`;
+  const watchRows = sortedQueue.map(r=>{
+    const m = metricsFor(r);
+    const rowKey = keyFor(r);
+    return `<tr tabindex="0" data-perf-key="${esc(rowKey)}" aria-selected="${rowKey===perfSelectedKey}">
+      <td><div class="tname">${esc(r.advertiser)}</div><div class="tsub">${esc(shortAd(r))}</div>
+        <div class="tsub">${esc(r.family)}${r.brands && r.brands.length?' · '+r.brands.join(', '):''}</div></td>
+      <td><span class="perf-kpi-label">CTR</span><div class="perf-result ${r.kind}">${ctrTxt(r.ctr)}</div>
+        <div class="perf-benchmark">${ctrTxt(r.lo)}–${ctrTxt(r.hi)}</div></td>
+      <td><div class="perf-support"><div class="perf-support-line"><b>Impr.</b><span>${compact(m.impressions)}</span></div>
+        <div class="perf-support-line"><b>Clicks</b><span>${compact(m.clicks)}</span></div>
+        <div class="perf-support-line"><b>Impact</b><span>${m.impactClicks>0?'+':''}${compact(m.impactClicks)}</span></div></div></td>
+      <td><div class="perf-delivery missing">Package grain</div><div class="perf-delivery-note">${cov('AP Package Billable Pacing Rate').toFixed(0)}% source coverage · open Pacing</div></td>
+      <td>${ownerBlock(r)}</td>
+      <td><span class="pill ${r.kind}">${esc(r.status)}</span></td>
+      <td><div class="perf-action-text">${esc(r.action)}</div></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('view-performance').innerHTML = `
+    <h1>Performance</h1>
+    <p class="lede">Give account managers and sellers a clear answer: what happened, is it within
+      expectation, who owns the next move, and what evidence supports the KPI?</p>
+    <p class="stamp">Portfolio performance · ${nf(rangeTotal)} comparable lines · current extract through
+      <b>${esc(D.asOf)}</b> · ranges shown are directional guidance, not campaign-specific targets</p>
+
+    <div class="perf-controls">
+      <div class="perf-control"><span class="label">View</span><span class="value">AM + CM action queue</span></div>
+      <div class="perf-control"><span class="label">Pod</span><span class="value">All Pods</span></div>
+      <div class="perf-control"><span class="label">Product</span><span class="value">All products</span></div>
+      <div class="perf-control"><span class="label">Primary KPI</span><span class="value">All KPIs</span></div>
+      <label class="perf-control perf-sort-control"><span class="label">Sort by</span>
+        <select id="perfSort" aria-label="Sort performance queue">
+          ${Object.entries(sortLabels).map(([value,label])=>`<option value="${value}" ${value===perfSort?'selected':''}>${label}</option>`).join('')}
+        </select>
+      </label>
+      <div class="perf-refresh">Updated ${esc(D.asOf)} · source freshness visible in every report</div>
+    </div>
+
+    <div class="perf-summary-grid">
+      ${summaryStat('Campaigns evaluated', nf(D.phTabs.find(t=>t.tab==='Performance')?.rows||rangeTotal), 'Performance source rows')}
+      ${summaryStat('Within benchmark', `${withinShare}%`, `${nf(rangeStats.within)} of ${nf(rangeTotal)} comparable lines`)}
+      ${summaryStat('Below range', nf(rangeStats.below), 'Open an optimization conversation', 'behind')}
+      ${summaryStat('Above range', nf(rangeStats.above), 'Proof points for renewal and upsell', 'ahead')}
+    </div>
+
+    <div class="sec">
+      <div class="perf-workspace">
+        <div class="perf-panel">
+          <div class="perf-panel-head">
+            <div><h2>Performance action queue</h2>
+              <p>Sort by impact or supporting volume to surface the biggest drivers, then route the next move to the AM and CM.</p></div>
+            <span class="perf-viewtag">${sortedQueue.length} rows · ${esc(sortLabels[perfSort])}</span>
+          </div>
+          <div class="tablewrap"><table class="perf-table-screen">
+            <thead><tr><th>Advertiser / creative</th><th>Primary KPI</th><th>Supporting numbers</th>
+              <th>Delivery</th><th>Owner</th><th>Status</th><th>Next move</th></tr></thead>
+            <tbody>${watchRows}</tbody>
+          </table></div>
+        </div>
+
+        <aside class="perf-detail">
+          <div class="label">Selected account · action needed</div>
+          <h2>${esc(selected.advertiser)}</h2>
+          <div class="sub">${esc(selected.family)} · ${esc(selected.am)} · ${compact(selected.impressions)} impressions</div>
+          <div class="perf-detail-status"><span class="pill ${selected.kind}">${esc(selected.status)}</span><span class="tsub">${selected.kind==='above'?'Seller proof point':'Creative review candidate'}</span></div>
+          <div class="perf-scoreline"><strong class="${selected.kind}">${ctrTxt(selected.ctr)}</strong><span>CTR · primary KPI</span></div>
+          <div class="perf-detail-metrics">
+            ${detailMetric('Impressions', compact(selectedMetrics.impressions), 'First-party')}
+            ${detailMetric('Clicks', compact(selectedMetrics.clicks), 'Calculated from CTR')}
+            ${detailMetric('Spend / cost', 'Not joined', 'Needs cost source', true)}
+            ${detailMetric('Delivery', 'Package grain', `${cov('AP Package Billable Pacing Rate').toFixed(0)}% coverage`, true)}
+            ${detailMetric('Impact vs band', impactText, 'Derived from benchmark', selectedImpact===0)}
+            ${detailMetric('Booked value', 'See Book', 'Order-level metric', true)}
+          </div>
+          <div class="perf-impact"><strong>Supporting evidence:</strong> ${compact(selectedMetrics.clicks)} clicks from
+            ${compact(selectedMetrics.impressions)} impressions · ${impactText.toLowerCase()}.</div>
+          <div class="perf-detail-grid">
+            <div><div class="k">Benchmark</div><div class="v">${selectedRange}</div></div>
+            <div><div class="k">Campaign goal</div><div class="v">Campaign-specific</div></div>
+            <div><div class="k">Secondary signal</div><div class="v">ER / Attention*</div></div>
+            <div><div class="k">AM / CM owner</div><div class="v">${esc(selected.am)} / Campaign Management</div></div>
+          </div>
+          <div class="perf-benchmark-box"><div class="label">${selected.kind==='above'?'Why this is useful':'Why this is flagged'}</div>
+            <div class="range">${selectedRange} expected</div>
+            <p>${selected.kind==='above'
+              ? `Current result is above the internal ${esc(selected.family)} comparison band; use it as a proof point in renewal and upsell conversations.`
+              : `Current result is below the internal ${esc(selected.family)} comparison band; use the campaign brief to confirm the intended objective.`}</p>
+          </div>
+          <div class="perf-next"><h3>Suggested next move</h3>
+            <ul>${selected.kind==='above'
+              ? `<li>Capture the result as seller-ready renewal proof.</li>
+                 <li>Identify the creative, placement, and audience choices to replicate.</li>
+                 <li>Share the learning with the AM and Campaign Management.</li>`
+              : `<li>Review creative with Campaign Management.</li>
+                 <li>Partner with HearstMade on load time, messaging, and design.</li>
+                 <li>Check flight left, budget flexibility, and mid-flight creative options.</li>`}</ul>
+          </div>
+          <div class="perf-tags"><span class="perf-tag">Draft AM follow-up</span><span class="perf-tag">Document client learning</span></div>
+          <div class="perf-data-note"><span class="mark">✦</span><div>Numbers are shown at their available grain: clicks and impressions are creative-level; delivery and booked value are package/order-level; spend is not yet in this extract.</div></div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="sec">
+      <header><h2>Make the result useful in the account conversation</h2>
+        <p>The dashboard should turn the metric into a clear sales or account-management narrative.</p></header>
+      <div class="perf-insight-grid">
+        <div class="perf-insight positive"><div class="eyebrow">Seller-ready proof point</div>
+          <h3>${esc(proof.advertiser)} is outperforming its comparison band</h3>
+          <p>${esc(proof.family)} is at ${ctrTxt(proof.ctr)} against ${ctrTxt(proof.lo)}–${ctrTxt(proof.hi)} on
+            ${compact(proof.impressions)} impressions. Use this as evidence of what is working and as a renewal conversation starter.</p></div>
+        <div class="perf-insight priority"><div class="eyebrow">AM priority</div>
+          <h3>Below range should trigger an action, not a failure label</h3>
+          <p>Start with creative, targeting, and placement context. If the campaign is complete, document the intervention and add Attention, IAS, or Audience Insights where available.</p></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <header><h2>What can be shown today</h2>
+        <p>Metric coverage stays visible so users know which signals are ready for a client-facing headline and which are still being joined.</p></header>
+      <div class="grid g3">
+        ${summaryStat('CTR', 'Ready', `${cov('First Party CTR').toFixed(0)}% field coverage`)}
+        ${summaryStat('VCR', 'Partial', `${cov('Video_Completion Rate').toFixed(1)}% field coverage`, 'ahead')}
+        ${summaryStat('GA4 pageviews', 'Next', `${cov('Google Analytics Pageviews').toFixed(1)}% field coverage`, 'behind')}
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="perf-context"><span class="mark">✦</span><div><b>Benchmark context:</b> ranges represent the middle 50% of results (25th–75th percentile) with outliers removed. The supplied guidance covers Q4 2024–Q1 2025, with directional insights labeled Q3–Q4 2025. Branded Content and Shopper Solutions ranges are still forthcoming, so this mockup labels the current Branded Content band as an internal comparison proxy.</div></div>
+    </div>`;
+
+  const sortSelect = document.getElementById('perfSort');
+  if(sortSelect) sortSelect.addEventListener('change', e=>{ perfSort=e.target.value; renderPerformance(); });
+  document.querySelectorAll('[data-perf-key]').forEach(row=>{
+    const choose = () => { perfSelectedKey=row.dataset.perfKey; renderPerformance(); };
+    row.addEventListener('click', choose);
+    row.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); choose(); } });
+  });
+}
+
+/* ================= BOOK ================= */
+function renderBook(){
+  const maxRisk = Math.max(...D.teams.map(t=>t.risk));
+  const teams = D.teams.map(t=>{
+    const tot = t.packages||1;
+    const seg = (n,c)=> n? `<i style="width:${(n/tot*100).toFixed(1)}%;background:${c}"></i>`:'';
+    return `<tr>
+      <td class="tname">${esc(t.team)}</td>
+      <td class="r">${t.ams}</td>
+      <td class="r">${t.packages}</td>
+      <td><div class="stack" title="${t.behind} behind, ${t.onplan} on plan, ${t.ahead} over">
+        ${seg(t.behind,'var(--behind)')}${seg(t.notlive,'var(--blocked)')}
+        ${seg(t.onplan,'var(--onplan)')}${seg(t.ahead,'var(--ahead)')}</div></td>
+      <td class="r" style="color:var(--behind);font-weight:500">${t.behind}</td>
+      <td class="r" style="color:var(--ahead)">${t.ahead}</td>
+      <td class="r">${compact(t.shortfall)}</td>
+      <td class="r" style="font-weight:500">${money(t.risk)}</td>
+      <td class="r tsub">${t.valueCoverage}%</td>
+    </tr>`;
+  }).join('');
+
+  const ams = D.amRows.map(r=>`
+    <tr>
+      <td class="tname">${esc(r.am)}</td>
+      <td class="tsub">${esc(r.team)}</td>
+      <td class="r">${r.packages}</td>
+      <td class="r" style="color:${r.behind?'var(--behind)':'var(--muted)'}">${r.behind}</td>
+      <td class="r">${signed(r.median_gap)}</td>
+      <td class="r">${compact(r.shortfall)}</td>
+      <td class="r" style="font-weight:500">${riskTxt(r)}</td>
+    </tr>`).join('');
+
+  const cov = D.coverage.map(c=>{
+    const cls = c.pct>=95?'':(c.pct>=50?'part':'poor');
+    return `<div>${esc(c.field)}<div class="covbar" style="margin-top:4px">
+      <i class="${cls}" style="width:${c.pct}%"></i></div></div>
+      <div class="tsub" style="white-space:nowrap">${c.pct}%</div>`;
+  }).join('');
+
+  document.getElementById('view-book').innerHTML = `
+    <h1>Book</h1>
+    <p class="lede">The Pod and account manager rollup a sales leader opens before a pipeline
+      review — where delivery risk is concentrated, and what it is worth.</p>
+    <p class="stamp">Value is priced from the booked figure carried in the order name, covering
+      <b>${D.totals.valueCoverage}%</b> of live packages · substituting <b>AP Net Cost</b> would
+      make this exact and is the single highest-value field to add to the extract</p>
+
+    <div class="grid g3">
+      ${stat('Booked value in flight', money(D.totals.value), `${D.totals.valueCoverage}% priced`)}
+      ${stat('Value at risk', money(D.totals.risk),
+             `${(D.totals.risk/D.totals.value*100).toFixed(1)}% of the book`, 'behind')}
+      ${stat('Portfolio pacing', pct(D.totals.pacingIndex,1),
+             'delivered against plan to date')}
+    </div>
+
+    <div class="sec">
+      <header><h2>By Pod</h2>
+        <p>Exposure in dollars and count of problem packages produce different rankings, because
+          the packages that slip are not the average ones. A review run off alert volume points at
+          a different team than a review run off value.</p></header>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Pod</th><th class="r">AMs</th><th class="r">Packages</th>
+          <th>Delivery mix</th><th class="r">Behind</th><th class="r">Over</th>
+          <th class="r">Impr. short</th><th class="r">At risk</th><th class="r">Priced</th></tr></thead>
+        <tbody>${teams}</tbody></table></div>
+    </div>
+
+    <div class="sec">
+      <header><h2>By account manager</h2>
+        <p>Managers with three or more live packages, ranked by exposure. Median gap separates a
+          book that is uniformly slightly behind from one with a few deep problems.</p></header>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Account manager</th><th>Pod</th><th class="r">Packages</th>
+          <th class="r">Behind</th><th class="r">Median gap</th><th class="r">Impr. short</th>
+          <th class="r">At risk</th></tr></thead>
+        <tbody>${ams}</tbody></table></div>
+    </div>
+
+    <div class="sec">
+      <header><h2>What the data will and will not support</h2>
+        <p>Field coverage across the weekly extract. Anything under half populated cannot carry a
+          headline number or an alert threshold, and saying so up front is cheaper than
+          discovering it in a pilot.</p></header>
+      <div class="grid g2">
+        <div class="card"><div class="cov">${cov}</div></div>
+        <div class="card">
+          <h3>Reading the coverage</h3>
+          <p style="font-size:13.5px;color:var(--muted);margin:0 0 10px;line-height:1.55">
+            Pacing, impressions and click-through are complete, so the pacing and creative views
+            above stand on solid ground.</p>
+          <p style="font-size:13.5px;color:var(--muted);margin:0 0 10px;line-height:1.55">
+            Third-party numbers land on a third of lines, which is correct — only third-party
+            tracked placements have them. The discrepancy check should run on that third and stay
+            silent elsewhere rather than reading as missing data.</p>
+          <p style="font-size:13.5px;color:var(--muted);margin:0;line-height:1.55">
+            Attention unit score at ${D.coverage.find(c=>c.field==='Attention Unit Score').pct}% and
+            Google Analytics pageviews at ${D.coverage.find(c=>c.field==='Google Analytics Pageviews').pct}%
+            are the two to resolve before either appears in anything client-facing. Pageviews in
+            particular is the GA4 dependency the roadmap already flags.</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ================= REPORTS ================= */
+const REPORTS = [
+  {name:'Delivery alert digest', who:'Account manager', when:'Daily, 7am',
+   how:'Email and Slack', body:'Only the checks that fired on that manager\u2019s book, ranked by value at risk, each with the rule that fired and a link into the package.',
+   replaces:'The portfolio health workbook, opened tab by tab'},
+  {name:'Weekly pacing review', who:'Account manager and campaign manager', when:'Monday, 8am',
+   how:'One-page PDF and dashboard link', body:'Every live package with delivered against expected, the week\u2019s movement, and a short list of decisions to make before Wednesday.',
+   replaces:'The weekly pacing export and its manual formatting'},
+  {name:'Pod delivery review', who:'Sales lead and AM director', when:'Monday, 9am',
+   how:'Dashboard, with PDF on request', body:'Team rollup, value at risk, and the accounts driving it. No line-item detail.',
+   replaces:'Ad hoc requests down to the AM'},
+  {name:'Over-delivery and upsell list', who:'Seller and account manager', when:'Weekly',
+   how:'Email', body:'Packages delivering more than ten points ahead, with the impressions given away and the format that is over-performing, framed as an upsell prompt.',
+   replaces:'Nothing today \u2014 this is new'},
+  {name:'Creative watchlist', who:'Account manager and campaign manager', when:'Twice weekly',
+   how:'Dashboard', body:'Creative below its format range with enough volume to judge, while there is still flight left to swap it.',
+   replaces:'The performance tab, read after the fact'},
+  {name:'Launch readiness', who:'Account manager and ad ops', when:'Thursday, for the week ahead',
+   how:'Email', body:'Packages starting inside seven days, plus anything live with no delivery, plus end-date mismatches on those flights.',
+   replaces:'Three separate workbook tabs'},
+  {name:'Client delivery summary', who:'Client, sent by the AM', when:'Monthly and at wrap',
+   how:'Branded PDF, AM edits before sending', body:'Delivery against goal, format performance against benchmark, and the two or three findings worth a conversation. Drafted, never auto-sent.',
+   replaces:'The screenshot wrap deck'},
+];
+
+function renderReports(){
+  const rows = REPORTS.map(r=>`
+    <tr>
+      <td><div class="tname">${esc(r.name)}</div>
+          <div class="tsub" style="margin-top:3px;max-width:46ch;line-height:1.45">${esc(r.body)}</div></td>
+      <td>${esc(r.who)}</td>
+      <td class="tsub">${esc(r.when)}</td>
+      <td class="tsub">${esc(r.how)}</td>
+      <td class="tsub" style="max-width:26ch;line-height:1.45">${esc(r.replaces)}</td>
+    </tr>`).join('');
+
+  const top = D.worklist[0], t2 = D.worklist[1];
+  const over = D.overlist[0];
+  const bad = D.bottomCreative[0];
+
+  document.getElementById('view-reports').innerHTML = `
+    <h1>Reports</h1>
+    <p class="lede">A dashboard nobody opens changes nothing. Each view above has a push
+      counterpart that arrives before the decision, addressed to one role, carrying only what
+      that role can act on.</p>
+    <p class="stamp">Seven scheduled outputs replace the fourteen-tab workbook and the weekly
+      pacing export · every one is generated from the same governed tables behind the dashboards</p>
+
+    <div class="sec">
+      <header><h2>What gets sent</h2></header>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Report</th><th>Who it is for</th><th>When</th><th>How</th>
+          <th>What it replaces</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+    </div>
+
+    <div class="sec">
+      <header><h2>The daily digest, rendered</h2>
+        <p>Built from this morning\u2019s numbers for one manager, to show the shape and the length.
+          Four items, one screen, nothing to download.</p></header>
+      <div class="email">
+        <div class="hd">
+          <div class="subj">Delivery: 2 packages need a decision today</div>
+          <div class="meta">Insights Hub → ${esc(top.am)} · ${esc(D.asOf)}, 7:00am ·
+            ${esc(top.team)}</div>
+        </div>
+        <div class="bd">
+          <p>Two packages on your book are far enough behind that they will not recover on their
+            current daily rate.</p>
+          <ul>
+            <li><b>${esc(top.advertiser)}</b> — ${esc(top.package)} is ${signed(top.gap)} behind
+              with ${top.daysLeft} days left. Delivering ${pct(top.deliveredPct,0)} of goal against
+              ${pct(top.expected,0)} expected; ${compact(top.shortfall)} impressions short,
+              ${money(top.risk)} at risk.</li>
+            <li><b>${esc(t2.advertiser)}</b> — ${esc(t2.package)} is ${signed(t2.gap)} behind,
+              ${compact(t2.shortfall)} short, ${money(t2.risk)} at risk.</li>
+          </ul>
+          <p>One worth a call the other way:</p>
+          <ul>
+            <li><b>${esc(over.advertiser)}</b> is ${signed(over.gap)} ahead of plan.
+              ${compact(over.imprOver)} impressions have gone out ahead of contract on a
+              ${money(over.value)} package — a reason to open the renewal conversation now rather
+              than to throttle.</li>
+          </ul>
+          <p>And one creative to swap while there is still flight left:</p>
+          <ul>
+            <li><b>${esc(bad.advertiser)}</b> — ${esc(bad.family)} at ${ctrTxt(bad.ctr)} against a
+              family range of ${ctrTxt(bad.lo)} to ${ctrTxt(bad.hi)}, on
+              ${compact(bad.impressions)} impressions.</li>
+          </ul>
+          <p style="color:var(--faint);font-size:12.5px;margin:0">
+            Delivery through ${esc(D.asOf)}. Pacing compares delivered share of goal with elapsed
+            share of flight. Open the package · Snooze a check · Tell us this fired wrongly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <header><h2>Rules the reports run on</h2></header>
+      <div class="grid g2">
+        <div class="card">
+          <h3>One owner per message</h3>
+          <p style="font-size:13.5px;color:var(--muted);margin:0;line-height:1.55">
+            Every alert resolves to a single named account manager before it is sent. A check that
+            cannot be attributed goes to an operations queue, not to everyone. Thirteen rows in the
+            current extract carry no account management team, and that is where the queue
+            starts.</p>
+        </div>
+        <div class="card">
+          <h3>Silence is a feature</h3>
+          <p style="font-size:13.5px;color:var(--muted);margin:0;line-height:1.55">
+            A digest with nothing in it says so in one line. Checks that fire on more than a fifth
+            of the book get their threshold reviewed rather than their volume tolerated — the
+            over-120 rule is the current example.</p>
+        </div>
+        <div class="card">
+          <h3>Every number carries its source</h3>
+          <p style="font-size:13.5px;color:var(--muted);margin:0;line-height:1.55">
+            Platform figures and internal figures are labelled separately wherever they appear, and
+            a metric whose field is under half populated cannot be a headline. Freshness shows on
+            the view, not in a footnote.</p>
+        </div>
+        <div class="card">
+          <h3>Client-facing output is drafted, not sent</h3>
+          <p style="font-size:13.5px;color:var(--muted);margin:0;line-height:1.55">
+            The monthly summary and the wrap insert are generated and held for the account manager
+            to edit. Automation writes the first draft and does the arithmetic; the manager keeps
+            the client relationship.</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---------- nav ---------- */
+const RENDER = {today:renderToday, pacing:renderPacing, creative:renderCreative,
+                performance:renderPerformance,
+                book:renderBook, reports:renderReports};
+const done = {};
+function show(v){
+  if(!done[v]){ RENDER[v](); done[v]=true; }
+  document.querySelectorAll('.view').forEach(s=>{ s.hidden = s.id !== 'view-'+v; });
+  document.querySelectorAll('.nav button').forEach(b=>{
+    b.setAttribute('aria-current', String(b.dataset.view===v));
+  });
+  window.scrollTo({top:0});
+}
+document.querySelector('.nav').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-view]'); if(b) show(b.dataset.view);
+});
+show('today');
+</script>
+</body>
+</html>
